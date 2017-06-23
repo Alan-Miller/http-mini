@@ -5,7 +5,7 @@
 <!-- <img src="https://raw.githubusercontent.com/DevMountain/weatherman/master/readme-assets/solution.PNG"/> -->
 
 ENEMIES AT OUR GATE!
-In this mini project we will use axios to make requests to an API of characters. We'll be creating, reading, updating, and deleting these characters from the API. The API exists as a file called db.json in the project folder and is served up through json-server, a dependency in the package.json file which simulates a hosted API. If you are interested in how json-server was used in this project, there are some notes you can read at the bottom after completing today's mini project. For the purposes of this project, just know you'll be interacting with the API in a similar way to how you would in a real environment.
+In this mini project we will use axios to make requests to an API of characters. We'll be creating, reading, updating, and deleting these characters from the API. The API exists as a file called db.json in the project folder and is served up through json-server, a dependency in the package.json file which simulates a hosted API. If you are interested in how json-server was used in this project, there are some notes you can read at the bottom after completing today's mini project. For the purposes of this project, just know you'll be interacting with the API in a similar way to how you would in a real environment. We'll make use of GET, POST, PATCH, and DELETE methods in our requests.
 
 ## Setup
 
@@ -401,7 +401,7 @@ export default connect( state => state, { reset } )( App );
 
 </details>
 
-## Step 7
+## Notes on json-server
 
 ### Summary
 
@@ -416,64 +416,192 @@ In this step, we will update `CurrentWeather` to display an icon and the actual 
 
 <details>
 
-<summary> <code> src/components/CurrentWeather/CurrentWeather.js </code> </summary>
+<summary> <code> rpg/db.json </code> </summary>
 
-```jsx
-import React, { PropTypes } from "react";
+```json
+{
+  "defenses": [
+    {
+      "id": 0,
+      "recruit": "Bill the Archer"
+    }
+  ],
+  "undead": [
+    {
+      "id": 1,
+      "name": "Undead Army",
+      "shortname": "undead",
+      "leader": "Necromancer"
+    }
+  ],
+  "undead_minions": [
+    {
+      "id": 1,
+      "type": "Skeleton"
+    },
+    {
+      "id": 2,
+      "type": "Skeleton Archer"
+    },
+    {
+      "id": 3,
+      "type": "Skeleton Archer"
+    },
+    {
+      "id": 4,
+      "type": "Skeleton"
+    },
+    {
+      "id": 5,
+      "type": "Skeleton"
+    },
+    {
+      "id": 6,
+      "type": "Skeleton"
+    },
+    {
+      "id": 7,
+      "type": "Skeleton Archer"
+    },
+    {
+      "id": 8,
+      "type": "Skeleton Archer"
+    },
+    {
+      "id": 9,
+      "type": "Lich"
+    }
+  ],
+  "barbarian": [
+    {
+      "id": 2,
+      "name": "Barbarian Horde",
+      "shortname": "barbarian",
+      "leader": "Barbarian Warlord"
+    }
+  ],
+  "barbarian_minions": [
+    {
+      "id": 1,
+      "type": "Barbarian"
+    },
+    {
+      "id": 2,
+      "type": "Barbarian"
+    },
+    {
+      "id": 3,
+      "type": "Barbarian"
+    },
+    {
+      "id": 4,
+      "type": "Barbarian"
+    },
+    {
+      "id": 5,
+      "type": "Barbarian"
+    },
+    {
+      "id": 6,
+      "type": "Barbarian"
+    },
+    {
+      "id": 7,
+      "type": "Barbarian"
+    },
+    {
+      "id": 8,
+      "type": "Barbarian"
+    },
+    {
+      "id": 9,
+      "type": "Barbarian"
+    },
+    {
+      "id": 10,
+      "type": "Barbarian"
+    },
+    {
+      "id": 11,
+      "type": "Barbarian"
+    },
+    {
+      "id": 12,
+      "type": "Barbarian"
+    },
+    {
+      "id": 13,
+      "type": "Barbarian"
+    },
+    {
+      "id": 14,
+      "type": "Barbarian"
+    },
+    {
+      "id": 15,
+      "type": "Barbarian"
+    },
+    {
+      "id": 16,
+      "type": "Barbarian"
+    },
+    {
+      "id": 17,
+      "type": "Barbarian"
+    },
+    {
+      "id": 18,
+      "type": "Barbarian"
+    },
+    {
+      "id": 19,
+      "type": "Barbarian"
+    },
+    {
+      "id": 20,
+      "type": "Barbarian"
+    }
+  ],
+  "goblin": [
+    {
+      "id": 3,
+      "name": "Great Goblin Family",
+      "shortname": "goblin",
+      "leader": "Grandma Gob"
+    }
+  ],
+  "goblin_minions": [
+    {
+      "id": 1,
+      "type": "Goblin"
+    },
+    {
+      "id": 2,
+      "type": "Goblin"
+    },
+    {
+      "id": 3,
+      "type": "Goblin"
+    },
+    {
+      "id": 4,
+      "type": "Goblin"
+    },
+    {
+      "id": 5,
+      "type": "Goblin"
+    },
+    {
+      "id": 6,
+      "type": "Goblin"
+    },
+    {
+      "id": 7,
+      "type": "Angry Pixie (adopted)"
+    }
+  ]
+}
 
-import "./CurrentWeather.css";
-
-export default function CurrentWeather( { weather, reset } ) {
-  const {
-    currentTemperature,
-    humidity,
-    icon,
-    location,
-    maxTemperature,
-    minTemperature,
-    wind
-  } = weather;
-  return (
-    <div className="current-weather">
-      <div className="current-weather__weather">
-        <h3 className="current-weather__location"> { location } </h3>
-        <img
-          alt="current weather icon"
-          className="current-weather__icon"
-          src={ icon }
-        />
-        <h3 className="current-weather__temp"> { currentTemperature }° </h3>
-
-        <div className="current-weather__separator" />
-
-        <ul className="current-weather__stats">
-          <li className="current-weather__stat">Max: { maxTemperature }°</li>
-          <li className="current-weather__stat">Min: { minTemperature }°</li>
-          <li className="current-weather__stat">Wind: { wind } MPH</li>
-          <li className="current-weather__stat">Humidity: { humidity }%</li>
-        </ul>
-      </div>
-      <button
-        className="current-weather__search-again"
-        onClick={ reset }
-      >
-        Search Again
-      </button>
-    </div>
-  );
-  }
-
-  CurrentWeather.propTypes = {
-    reset: PropTypes.func.isRequired
-  , weather: PropTypes.shape( {
-      icon: PropTypes.string.isRequired
-    , currentTemperature: PropTypes.number.isRequired
-    , maxTemperature: PropTypes.number.isRequired
-    , minTemperature: PropTypes.number.isRequired
-    , wind: PropTypes.number.isRequired
-    , humidity: PropTypes.number.isRequired
-  } ).isRequired
-};
 ```
 
 </details>

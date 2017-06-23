@@ -1,5 +1,3 @@
-import React from 'react'
-
 export function turnApiObjIntoArray(apiObj) {
   const {undead_minions, barbarian_minions, goblin_minions} = apiObj;
   var undead = apiObj.undead.length > 0 ? Object.assign(apiObj.undead[0], {"minions": undead_minions}) : ''

@@ -5,7 +5,6 @@ import {getTroops} from './services/getTroops';
 import {postTroop} from './services/postTroop';
 import {patchMinion} from './services/patchMinion';
 import {deleteArmy} from './services/deleteArmy';
-import {turnApiObjIntoArray} from './components/turnApiObjIntoArray';
 
 class App extends Component {
 
@@ -29,7 +28,7 @@ class App extends Component {
   seeEnemies() {
     getEnemies().then(apiObj => {
       this.setState({
-        armiesArray: turnApiObjIntoArray(apiObj)
+        armiesArray: apiObj
       })
     })
   }
@@ -115,13 +114,8 @@ class App extends Component {
         {/* reinforcements */}
         <div className="reinforcements">
           <form type="submit">
-<<<<<<< HEAD
-            Form 11-A (New Recruit Requests):
+            Form 11-A (New Recruit Request Form):
             <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit"/>
-=======
-            Request form for new recruit:
-            <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Type of troop needed"/>
->>>>>>> master
             <button onClick={(e) => this.recruitTroop(e, this.state.newRecruit)}>Enlist!</button>
           </form>
           <span>{troops}</span>
