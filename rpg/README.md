@@ -4,16 +4,18 @@
 
 <!-- <img src="https://raw.githubusercontent.com/DevMountain/weatherman/master/readme-assets/solution.PNG"/> -->
 
-ENEMIES AT OUR GATE! In this mini project we will use axios to make requests to an API of characters. This API exists as a file called db.json in the project folder and is served up through json-server, a dependency in the package.json file which simulates a hosted API. If you are interested in how json-server was used in this project, there are some notes you can read at the bottom after completing the project. For the purposes of this project, just know you'll be interacting with the API in a similar way to how you would in a real environment.
+ENEMIES AT OUR GATE!
+In this mini project we will use axios to make requests to an API of characters. We'll be creating, reading, updating, and deleting these characters from the API. The API exists as a file called db.json in the project folder and is served up through json-server, a dependency in the package.json file which simulates a hosted API. If you are interested in how json-server was used in this project, there are some notes you can read at the bottom after completing today's mini project. For the purposes of this project, just know you'll be interacting with the API in a similar way to how you would in a real environment.
 
 ## Setup
 
-* `Fork` and `clone` this repository.
-* `cd` into the project directory.
-* Run `npm i` to install dependencies.
-* Run `npm start` to spin up the development server.
-* In a new terminal:
-  * `cd` into the project directory.
+* Open a terminal window:
+  * `Fork` and `clone` this repository.
+  * `cd` into the `rpg` project directory.
+  * Run `npm i` to install dependencies.
+  * Run `npm start` to spin up the development server.
+* In a second terminal window:
+  * `cd` into the `rpg` project directory.
   * Run `npm run api`.
     * This will run a script in the package.json file that will run json-server, point to our API file, and set a port. The API has been setup to be delayed by 1 second.
 
