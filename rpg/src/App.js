@@ -42,11 +42,11 @@ class App extends Component {
     })
   }
 
-  recruitTroop(event, type) {
+  recruitTroop(event, recruit) {
     event.preventDefault()
     const paperwork = document.getElementById('paperwork')
-    if (type) {
-      postTroop(type).then(apiData => {
+    if (recruit) {
+      postTroop(recruit).then(apiData => {
         this.callTroops();
         paperwork.value = ''
       })
@@ -83,7 +83,7 @@ class App extends Component {
     const armies = this.state.armiesArray.map((army, armyIndex) => (
       <ul key={armyIndex} className="army"><h3>Enemy Army #{army.id}: {army.name}</h3>
         <div className="leader" onClick={() => this.slayLeader(army.shortname, army.id)}>{army.leader}</div>
-        <ul>
+        <ul className="minions">
           {army.minions.map((minion, minionIndex) => (
             <li key={minionIndex} className="minion" onClick={() => this.transformMinion(armyIndex, minionIndex, minion.id)}>{minion.type}</li>
           ))}
@@ -93,7 +93,7 @@ class App extends Component {
 
     const troops = this.state.defensesArray.map((troop, i) => (
       <ul key={i} className="troops">
-        <li className="troop">{troop.type}</li>
+        <li className="troop">{troop.recruit}</li>
       </ul>
     ))
 
@@ -115,8 +115,8 @@ class App extends Component {
         {/* reinforcements */}
         <div className="reinforcements">
           <form type="submit">
-            Request form for new recruit:
-            <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Type of troop needed"/>
+            Form 11-A (New Recruit Requests):
+            <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit"/>
             <button onClick={(e) => this.recruitTroop(e, this.state.newRecruit)}>Enlist!</button>
           </form>
           <span>{troops}</span>
