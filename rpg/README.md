@@ -409,8 +409,8 @@ In this step, we will update `CurrentWeather` to display an icon and the actual 
 
 ### Detailed Instructions
 
-* Open `src/components/CurrentWeather/CurrentWeather.js`.
-* Using the `weather` prop object, replace the static data for location, icon, current temp, max temp, min temp, wind, and humidity.
+* Open `src/db.json`.
+* Notice the "flat" structure of the API. json-server appears to prefer this un-nested format but allows custom routes to be built to simulate a nested API structure. The `routes.json` file is used to create custom routes, so even though our json-server API has a flat structure, we can simulate the more organizationally complex APIs we would find in the wild. When
 
 ### Solution
 
