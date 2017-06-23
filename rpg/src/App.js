@@ -81,7 +81,7 @@ class App extends Component {
 
   render() {
     const armies = this.state.armiesArray.map((army, armyIndex) => (
-      <ul key={armyIndex} className="army"><h3>Enemy #{army.id}: {army.name}</h3>
+      <ul key={armyIndex} className="army"><h3>Enemy Army #{army.id}: {army.name}</h3>
         <div className="leader" onClick={() => this.slayLeader(army.shortname, army.id)}>{army.leader}</div>
         <ul>
           {army.minions.map((minion, minionIndex) => (
@@ -99,10 +99,11 @@ class App extends Component {
 
     return (
       <div className="App">
+
+        {/* main defenses */}
         <div className="App-header">
           <h1>Enemies at our gate!</h1>
           <h2>Prepare our defenses!</h2>
-
           <div className="defenses">
             <div className="defense" id="sentry" onClick={this.seeEnemies}>Sentry<span className="instructions">Click here to see approaching enemies!</span></div>
             <div className="defense" id="captain">Captain<span className="instructions">Fill out paperwork below to recruit new troop!</span></div>
@@ -110,14 +111,21 @@ class App extends Component {
             <div className="defense" id="ballista">Ballista<span className="instructions">Blast enemy leader to disperse army!</span></div>
           </div>
         </div>
-        <form type="submit">
-          <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Type of troop needed"/>
-          <button onClick={(e) => this.recruitTroop(e, this.state.newRecruit)}>Enlist</button>
-        </form>
-        <p>{troops}</p>
-        <p>{this.state.victoryMessage}</p>
+
+        {/* reinforcements */}
+        <div className="reinforcements">
+          <form type="submit">
+            Request form for new recruit:
+            <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Type of troop needed"/>
+            <button onClick={(e) => this.recruitTroop(e, this.state.newRecruit)}>Enlist!</button>
+          </form>
+          <span>{troops}</span>
+          <p>{this.state.victoryMessage}</p>
+        </div>
+
+        {/* enemies */}
         <div className="enemies">
-          {armies}
+          <div>{armies}</div>
         </div>
       </div>
     );
