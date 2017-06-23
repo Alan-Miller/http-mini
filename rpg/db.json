@@ -2,78 +2,17 @@
   "defenses": [
     {
       "id": 0,
-      "type": "Archer"
-    },
-    {
-      "type": "Archer",
-      "id": 1
-    },
-    {
-      "type": "Soldier",
-      "id": 2
-    },
-    {
-      "type": "Soldier",
-      "id": 3
-    },
-    {
-      "type": "Archer",
-      "id": 4
-    },
-    {
-      "type": "Infantry",
-      "id": 5
-    },
-    {
-      "type": "Infantry",
-      "id": 6
-    },
-    {
-      "type": "Infantry",
-      "id": 7
-    },
-    {
-      "type": "Infantry",
-      "id": 8
-    },
-    {
-      "type": "Infantry",
-      "id": 9
-    },
-    {
-      "type": "Archer",
-      "id": 10
-    },
-    {
-      "type": "Archer",
-      "id": 11
-    },
-    {
-      "type": "Infantry",
-      "id": 12
-    },
-    {
-      "type": "InfantryInfantry",
-      "id": 13
-    },
-    {
-      "type": "Infantry",
-      "id": 14
-    },
-    {
-      "type": "InfantryInfantry",
-      "id": 15
-    },
-    {
-      "type": "Infantry",
-      "id": 16
-    },
-    {
-      "type": "Infantry",
-      "id": 17
+      "recruit": "Bill the Archer"
     }
   ],
-  "undead": [],
+  "undead": [
+    {
+      "id": 1,
+      "name": "Undead Army",
+      "shortname": "undead",
+      "leader": "Necromancer"
+    }
+  ],
   "undead_minions": [
     {
       "id": 1,
@@ -112,7 +51,14 @@
       "type": "Lich"
     }
   ],
-  "barbarian": [],
+  "barbarian": [
+    {
+      "id": 2,
+      "name": "Barbarian Horde",
+      "shortname": "barbarian",
+      "leader": "Barbarian Warlord"
+    }
+  ],
   "barbarian_minions": [
     {
       "id": 1,
@@ -192,7 +138,7 @@
     },
     {
       "id": 20,
-      "type": "Barbarian}"
+      "type": "Barbarian"
     }
   ],
   "goblin": [
