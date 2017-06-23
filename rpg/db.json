@@ -2,7 +2,7 @@
   "defenses": [
     {
       "id": 0,
-      "type": "Archer"
+      "recruit": "Bill the Archer"
     }
   ],
   "undead": [
@@ -20,7 +20,7 @@
     },
     {
       "id": 2,
-      "type": "Lich"
+      "type": "Skeleton Archer"
     },
     {
       "id": 3,
@@ -138,7 +138,7 @@
     },
     {
       "id": 20,
-      "type": "Barbarian}"
+      "type": "Barbarian"
     }
   ],
   "goblin": [
