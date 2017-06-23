@@ -115,7 +115,7 @@ class App extends Component {
         {/* reinforcements */}
         <div className="reinforcements">
           <form type="submit">
-            Form 11-A (New Recruit Requests):
+            Form 11-A (New Recruit Request Form):
             <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit"/>
             <button onClick={(e) => this.recruitTroop(e, this.state.newRecruit)}>Enlist!</button>
           </form>
