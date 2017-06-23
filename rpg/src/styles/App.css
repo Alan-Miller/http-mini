@@ -1,0 +1,138 @@
+.App {
+  background-color: indianred;
+  text-align: center;
+  min-height: 100vh;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #444;
+  height: 270px;
+  padding: 10px;
+  color: white;
+  border: dotted 20px #5a5a5a;
+  border-style: dotted;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+li {
+  list-style: none;
+  padding: 10px;
+  width: 100px;
+}
+
+.enemies {
+  /*background-color: #222;*/
+  position: relative;
+}
+
+.army {
+  margin-bottom: 40px;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  /*background-color: blue;*/
+  padding: 10px;
+  border-top: solid 2px #333;
+}
+
+.leader {
+  cursor: crosshair;
+  /*background-color: red;*/
+  font-size: 1.2em;
+  font-weight: bold;
+  width: 200px;
+  position: relative;
+  left: 50%;
+  transform: translate(-50%);
+  padding: 12px 0px;
+}
+
+.minion {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.reinforcements {
+  background-color: RGBA(147, 53, 47, 1.00);
+  color: white;
+}
+.defense {
+  display: inline-block;
+  text-align: center;
+  height: 60px;
+  min-width: 50px;
+  padding: 20px;
+  background-color: RGBA(147, 53, 47, 1.00);
+  border: solid 2px RGBA(197, 93, 87, 1.00);
+  border-radius: 4px 4px 50px 50px;
+  transform: rotateZ(7deg);
+  margin: 10px 20px;
+  cursor: pointer;
+}
+.defense:hover {
+  box-shadow: 0px 0px 2px 2px white;
+}
+.defense:hover .instructions {
+  visibility: visible;
+}
+.instructions {
+  margin-top: 10px;
+  min-width: 70px;
+  padding: 5px;
+  border-radius: 10px;
+  background-color: white;
+  color: indianred;
+  visibility: hidden;
+  display: block;
+  position: absolute;
+}
+
+#paperwork, #paperwork + button {
+  margin: 20px;
+  padding: 10px;
+  font-size: 0.9em;
+  background-color: RGBA(147, 53, 47, 1.00);
+  color: white;
+  outline: none;
+}
+#paperwork::-webkit-input-placeholder {
+  color: RGBA(255, 157, 160, 1.00);
+}
+form {
+  display: block;
+}
+
+button {
+  border-radius: 50px;
+  border: solid 2px RGBA(255, 157, 160, 1.00);
+}
+button:hover {
+  box-shadow: 0px 0px 2px 2px white;
+  cursor: pointer;
+}
+
+.troops {
+  display: inline;
+}
+.troop {
+  display: inline;
+  padding: 20px;
+  width: 40px;
+  border-radius: 0px 0px 50px 50px;
+  background-color: green;
+  transform: rotateZ(27deg);
+}
+
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
