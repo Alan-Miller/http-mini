@@ -1282,7 +1282,7 @@ Congratulations on finishing another mini project! For those who are interested 
       "id": 1,
       "name": "Undead Army",
       "shortname": "undead",
-      "leader": "Necromancer"
+      "leader": "Pumpkin King"
     }
   ],
   "undead_minions": [
@@ -1292,19 +1292,19 @@ Congratulations on finishing another mini project! For those who are interested 
     },
     {
       "id": 2,
-      "type": "Skeleton Archer"
+      "type": "Necromancer"
     },
     {
       "id": 3,
-      "type": "Skeleton Archer"
+      "type": "Zombie Archer"
     },
     {
       "id": 4,
-      "type": "Skeleton"
+      "type": "Zombie"
     },
     {
       "id": 5,
-      "type": "Skeleton"
+      "type": "Zombie"
     },
     {
       "id": 6,
@@ -1320,6 +1320,14 @@ Congratulations on finishing another mini project! For those who are interested 
     },
     {
       "id": 9,
+      "type": "Necromancer"
+    },
+    {
+      "id": 10,
+      "type": "Lich"
+    },
+    {
+      "id": 11,
       "type": "Lich"
     }
   ],
@@ -1452,6 +1460,7 @@ Congratulations on finishing another mini project! For those who are interested 
     }
   ]
 }
+
 
 ```
 
