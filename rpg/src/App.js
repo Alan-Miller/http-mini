@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './styles/App.css';
+
 import {getEnemies} from './services/getEnemies';
 import {getTroops} from './services/getTroops';
 import {postTroop} from './services/postTroop';
@@ -8,35 +9,31 @@ import {deleteArmy} from './services/deleteArmy';
 
 class App extends Component {
 
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
 
     this.state = {
-      armiesArray: [],
-      defensesArray: [],
-      newRecruit: "",
-      victoryMessage: ""
+      armiesArray: []
+      ,defensesArray: []
+      ,newRecruit: ""
     }
 
     this.seeEnemies = this.seeEnemies.bind(this)
-    // this.callTroops = this.callTroops.bind(this)
     this.recruitTroop = this.recruitTroop.bind(this)
-    this.transformMinion = this.transformMinion.bind(this)
-    this.slayLeader = this.slayLeader.bind(this)
   }
 
   seeEnemies() {
-    getEnemies().then(apiObj => {
+    getEnemies().then(apiData => {
       this.setState({
-        armiesArray: apiObj
+        armiesArray: apiData
       })
     })
   }
-
+  //
   callTroops() {
-    getTroops().then(apiArray => {
+    getTroops().then(apiData => {
       this.setState({
-        defensesArray: apiArray
+        defensesArray: apiData
       })
     })
   }
@@ -45,7 +42,7 @@ class App extends Component {
     event.preventDefault()
     const paperwork = document.getElementById('paperwork')
     if (recruit) {
-      postTroop(recruit).then(apiData => {
+      postTroop(recruit).then(() => {
         this.callTroops();
         paperwork.value = ''
       })
@@ -59,13 +56,13 @@ class App extends Component {
   }
 
   transformMinion(armyShortname, minionId) {
-    patchMinion(armyShortname, minionId).then(apiData => {
+    patchMinion(armyShortname, minionId).then(() => {
       this.seeEnemies();
     })
   }
 
   slayLeader(shortname, id) {
-    deleteArmy(shortname, id).then(apiData => {
+    deleteArmy(shortname, id).then(() => {
       this.seeEnemies();
     })
   }
@@ -76,7 +73,8 @@ class App extends Component {
 
   render() {
     const armies = this.state.armiesArray.map((army, armyIndex) => (
-      <ul key={armyIndex} className="army"><h3>Enemy Army #{army.id}: {army.name}</h3>
+      <ul key={armyIndex} className="army">
+        <h3>Enemy Army #{army.id}: {army.name}</h3>
         <div className="leader" onClick={() => this.slayLeader(army.shortname, army.id)}>{army.leader}</div>
         <ul className="minions">
           {army.minions.map((minion, minionIndex) => (
@@ -86,41 +84,48 @@ class App extends Component {
       </ul>
     ))
 
-    const troops = this.state.defensesArray.map((troop, i) => (
-      <ul key={i} className="troops">
+    const troops = this.state.defensesArray.map((troop, troopIndex) => (
+      <ul key={troopIndex} className="troops">
         <li className="troop">{troop.recruit}</li>
       </ul>
     ))
 
+    const message = this.state.armiesArray.length < 1 ? "ALL CLEAR" : "";
+
     return (
       <div className="App">
 
-        {/* main defenses */}
+        {/* Main Defenses */}
         <div className="App-header">
           <h1>Enemies at our gate!</h1>
           <h2>Prepare our defenses!</h2>
           <div className="defenses">
             <div className="defense" id="sentry" onClick={this.seeEnemies}>Sentry<span className="instructions">Click here to see approaching enemies!</span></div>
-            <div className="defense" id="captain">Captain<span className="instructions">Fill out paperwork below to recruit new troop!</span></div>
+            <div className="defense" id="captain">Captain<span className="instructions">Fill out Form NR-1 below to recruit new troop!</span></div>
             <div className="defense" id="wizard">Wizard<span className="instructions">Click directly on a minion to cast a spell!</span></div>
             <div className="defense" id="ballista">Ballista<span className="instructions">Blast enemy leader to disperse army!</span></div>
           </div>
         </div>
 
-        {/* reinforcements */}
+
+        {/* Reinforcements */}
         <div className="reinforcements">
           <form type="submit">
-            Form 11-A (New Recruit Request Form):
+            New Recruit Request Form:
             <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit"/>
             <button onClick={(e) => this.recruitTroop(e, this.state.newRecruit)}>Enlist!</button>
           </form>
-          <span>{troops}</span>
-          <p>{this.state.victoryMessage}</p>
+          {troops}
+          <div id="wall">
+            <span></span><span id="gate"></span><span></span>
+          </div>
         </div>
 
-        {/* enemies */}
+        <h1 id="message">{message}</h1>
+
+        {/* Enemy Armies */}
         <div className="enemies">
-          <div>{armies}</div>
+            {armies}
         </div>
       </div>
     );
