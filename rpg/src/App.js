@@ -19,7 +19,7 @@ class App extends Component {
     }
 
     this.seeEnemies = this.seeEnemies.bind(this)
-    this.callTroops = this.callTroops.bind(this)
+    // this.callTroops = this.callTroops.bind(this)
     this.recruitTroop = this.recruitTroop.bind(this)
     this.transformMinion = this.transformMinion.bind(this)
     this.slayLeader = this.slayLeader.bind(this)
