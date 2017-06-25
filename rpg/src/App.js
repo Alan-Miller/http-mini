@@ -53,7 +53,7 @@ class App extends Component {
   }
 
   handleInput(event) {
-    event.preventDefault();
+    // event.preventDefault();
     this.setState({
       newRecruit: event.target.value
     })
