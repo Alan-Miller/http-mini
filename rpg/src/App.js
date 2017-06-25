@@ -101,7 +101,7 @@ class App extends Component {
           <h2>Prepare our defenses!</h2>
           <div className="defenses">
             <div className="defense" id="sentry" onClick={this.seeEnemies}>Sentry<span className="instructions">Click here to see approaching enemies!</span></div>
-            <div className="defense" id="captain">Captain<span className="instructions">Fill out Form NR-1 below to recruit new troop!</span></div>
+            <div className="defense" id="captain">Captain<span className="instructions">Fill out Request Form below to recruit new troop!</span></div>
             <div className="defense" id="wizard">Wizard<span className="instructions">Click directly on a minion to cast a spell!</span></div>
             <div className="defense" id="ballista">Ballista<span className="instructions">Blast enemy leader to disperse army!</span></div>
           </div>
