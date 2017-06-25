@@ -495,7 +495,7 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
             </form>
             {troops}
             <div id="wall">
-              <span></span><span id="gate">GATE</span><span></span>
+              <span></span><span id="gate"></span><span></span>
             </div>
           </div>
 
@@ -773,7 +773,7 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
             </form>
             {troops}
             <div id="wall">
-              <span></span><span id="gate">GATE</span><span></span>
+              <span></span><span id="gate"></span><span></span>
             </div>
           </div>
 
@@ -994,7 +994,7 @@ Let's call on the Wizard to help out our troops! The Wizard will make use of the
             </form>
             {troops}
             <div id="wall">
-              <span></span><span id="gate">GATE</span><span></span>
+              <span></span><span id="gate"></span><span></span>
             </div>
           </div>
 
@@ -1217,7 +1217,7 @@ Our Sentry, Captain, and Wizard have done a great job of keeping the enemies at 
             </form>
             {troops}
             <div id="wall">
-              <span></span><span id="gate">GATE</span><span></span>
+              <span></span><span id="gate"></span><span></span>
             </div>
           </div>
 
