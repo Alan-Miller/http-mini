@@ -27,7 +27,7 @@ class App extends Component {
   render() {
 
 
-    const message = this.state.armiesArray.length < 1 ? "ALL CLEAR" : "";
+    const message = this.state && this.state.armiesArray.length < 1 ? "ALL CLEAR" : "";
 
     return (
       <div className="App">
