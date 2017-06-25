@@ -1,8 +1,9 @@
 import axios from 'axios';
+import {turnApiObjIntoArray} from '../utils/turnApiObjIntoArray';
 
 export function getEnemies() {
-  return axios.get('http://localhost:3005/db')
+  return axios.get('http://localhost:3005/all')
   .then(res => {
-    return res.data
+    return turnApiObjIntoArray(res.data)
   })
 }

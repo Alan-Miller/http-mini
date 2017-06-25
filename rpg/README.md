@@ -2,10 +2,9 @@
 
 # Project Summary
 
-<!-- <img src="https://raw.githubusercontent.com/DevMountain/weatherman/master/readme-assets/solution.PNG"/> -->
+![screenshot](./src/img/screenshot.png)
 
-ENEMIES AT OUR GATE!
-In this mini project we will use axios to make requests to an API of characters. We'll be creating, reading, updating, and deleting these characters from the API. The API exists as a file called db.json in the project folder and is served up through json-server, a dependency in the package.json file which simulates a hosted API. If you are interested in how json-server was used in this project, there are some notes you can read at the bottom after completing today's mini project. For the purposes of this project, just know you'll be interacting with the API in a similar way to how you would in a real environment.
+ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests to an API of characters. We'll be creating, reading, updating, and deleting these characters from the API. The API exists as a file called `db.json` in the project folder and is served up through `json-server`, a dependency in the `package.json` file which simulates a hosted API. Since our edits will change the `db.json` file, I included a copy of the API database at the bottom so you can start over if necessary. If you are interested in how `json-server` was used in this project, there are some notes you can read at the bottom after completing today's mini project. For the purposes of this project, just know you'll be interacting with the API in a similar way to how you would in a real environment. We'll make use of `GET`, `POST`, `PATCH`, and `DELETE` methods in our requests.
 
 ## Setup
 
@@ -16,464 +15,1444 @@ In this mini project we will use axios to make requests to an API of characters.
   * Run `npm start` to spin up the development server.
 * In a second terminal window:
   * `cd` into the `rpg` project directory.
-  * Run `npm run api`.
-    * This will run a script in the package.json file that will run json-server, point to our API file, and set a port. The API has been setup to be delayed by 1 second.
+  * Run `npm run api`. This will run a script in the package.json file that will run json-server, point to our API file, and set a port. The API has been setup to be delayed by 1 second.
+* You should now have two processes running in two separate terminal windows. Open a third window and run `npm install axios`. You can also use this third window if you want to commit any changes as you go, but keep the first two window running your app and your api.
 
-You should now have two processes running in two separate terminal windows. If you want to commit changes as you develop, use a third terminal window.
-
-## Step 1
+## Step 1: getEnemies request
 
 ### Summary
 
-We will begin this project by installing new dependencies and modifying the store to handle promises.
+* Start by glancing at the simple app. With the enemy armies approaching, we have four main defenses at the top of our screen: the Sentry, the Captain, the Wizard, and the Ballista. These four defenses represent the four axios requests we'll be using, respectively: `GET`, `POST`, `PATCH`, and `DELETE`. (`PATCH` is similar to `PUT` in that it updates our API, but `PATCH` allows us to change just a portion of the thing we are changing, and not the whole thing.)
+* Note that only the Sentry will actually be turned into a clickable button. However, hovering over any of the four will display some simple instructions about how the axios requests are made.
+* In this first step, we will start with our Sentry, adding a service that makes a call to the API and returns all characters. We will reformat that data with a pre-existing utility function so the data can then be rendered on the page the way we need it to.
 
 ### Instructions
 
-* Import `applyMiddleware` from `redux`.
-* Modify the original `createStore` to have two additional parameters after `weather`:
-  * `undefined` - This could be an initial state, but since the reducer is handling that, let's just pass `undefined`.
-  * `applyMiddleware( promiseMiddleware() )` - This will tell Redux that we want the middleware called on every action that is dispatched.
-
-### Solution
-
-<details>
-
-<summary> <code> src/store.js </code> </summary>
-
-```js
-import { createStore, applyMiddleware } from "redux";
-import promiseMiddleware from "redux-promise-middleware";
-import weather from "./ducks/weather";
-
-export default createStore( weather, undefined, applyMiddleware( promiseMiddleware() ) );
-```
-
-</details>
-
-## Step 2
-
-### Summary
-
-In this step, we will add an action for fetching weather data and handle all possible outcomes in the reducer in `src/ducks/weather.js`.
-
-### Instructions
-
-* Open `src/ducks/weather.js`.
-* Import `axios` at the top of the file.
-* Create a new action type of `SET_WEATHER` that equals `"SET_WEATHER"`.
-* Create and export a new action creator called `setWeather`:
-  * This function should take a single parameter called `location`.
-  * This function should create a variable called `URL` that equals the return value from `buildURL`.
-    * `buildURL` gets imported from `weatherUtils.js`. It takes a `location` parameter and returns an API url we can use with axios.
-  * This function should create a variable called `promise` that equals a promise using `axios.get` and the `URL` variable we just created.
-    * The `then` of the promise should capture the response and then return the value of `formatWeatherData( response.data )`.
-    * `formatWeatherData` gets imported from `weatherUtils.js`. It takes the object the API returns and formats it for our application to use.
-  * This function should `return` an object with two properties:
-    * `type` - This should equal our action type: `SET_WEATHER`.
-    * `payload` - This should equal the promise we created above: `promise`.
-* Update the `reducer` to handle the `SET_WEATHER` action:
-  * When the action type is `SET_WEATHER + "_PENDING"`:
-    * <details>
-      <summary> <code> Object </code> </summary>
+* Enemies are approaching, but we cannot see them yet. We need the Sentry to do a GET request to view the enemies armies stored in the API.
+* We'll be using some services to create our axios requests, so create a `services` folder inside your `src` folder. Inside, create a file called `getEnemies.js`.
+* In this new file, import `axios` at the top.
+* Create and export a function called `getEnemies` that takes in no parameters and returns an axios GET request (using `axios.get` and passing in the endpoint URL).
+  * Our API will be served by `localhost` using port 3005.
+  * We will use the URL `/all` to get all characters in the API.
+    ``<details>
+      <summary> <code> URL </code> </summary>
 
       ```js
-      return {
-        error: false,
-        loading: true,
-        search: false,
-        weather: {}
-      };
+      return axios.get('http://localhost:3005/all')
       ```
       </details>
-  * When the action type is `SET_WEATHER + "_FULFILLED"`:
-    * <details>
-      <summary> <code> Object </code> </summary>
+  * Make use of the `then()` method to handle the promise. When this method is called, it will take in a callback function with a single argument: the response value returned when the promise is fulfilled. This response contains the information we requested from the API, including data about all characters. Return this response, remembering that we really only want the requested `data` stored in the response object, not the entire object.
+    <details>
+      <summary> <code> getEnemies service </code> </summary>
 
       ```js
-      return {
-        error: false,
-        loading: false,
-        search: false,
-        weather: action.payload
-      };
+      export function getEnemies() {
+        return axios.get('http://localhost:3005/all')
+        .then(res => {
+          return (res.data)
+        })
+      }
       ```
       </details>
-  * When the action type is `SET_WEATHER + "_REJECTED"`:
-    * <details>
-      <summary> <code> Object </code> </summary>
+  * If you were to hit the endpoint in Postman now, you would see the information we requested. However, the API is returning the information in a different format than what we need, so we will pass the information through a utility function designed to reformat the data. We need a function that shows an understanding of both how the incoming API data is formatted and how our application needs it to be formatted.
+    * Luckily, this function has already been created. It is called `turnApiObjIntoArray.js` and it exists in the `utils` folder. It is designed to take in the API response as an argument and reformat it into an array we can use to display the data in our React app.
+    * All we need to do here is import the function into our `getEnemies` service and then adjust our service function to call the imported utility function on our response data, returning the correctly formatted data instead of the data in its original format.
+
+  ### Solution for getEnemies service
+
+  <details>
+
+  <summary> <code> src/services/getEnemies.js </code> </summary>
+
+  ```js
+  import axios from 'axios';
+  import {turnApiObjIntoArray} from '../utils/turnApiObjIntoArray';
+
+  export function getEnemies() {
+    return axios.get('http://localhost:3005/all')
+    .then(res => {
+      return turnApiObjIntoArray(res.data)
+    })
+  }
+
+  ```
+
+  </details>
+
+
+
+## Step 2: rendering enemies
+
+  ### Summary
+
+  * In this second step, we will render the API data on our view.
+  * Up till this point, your app should not be broken. Although the app has no functionality at the beginning, there should be nothing more than minor errors in the console. Now that we are beginning to edit `App.js`, however, things may begin to break when you save your changes before finishing this step.
+
+  ### Instructions
+  Part 1
+  * Our service is set up, but we need our front end to call a function to trigger our service, and we need to create a place for the information to be displayed in the view.
+  * Create a constructor function. On state, create a property called `armiesArray` and set it equal to an empty array. When the API is called and an array of enemies is returned, we will use `armiesArray` to store and display that data, mapping through array to show each item.
+
+  Part 2
+  * In the App components's `render` method, use the `map()` method to map over the `armiesArray` on state.
+    * Declare a variable called `armies` to store the results.
+    * The `map()` method is for arrays. It takes in a callback function that allows multiple parameters. We'll be using just the first two parameters, which represent the current item being mapped over and the index of that item in the array.
+    * Let's set these parameters now and call them `army` and `armyIndex`.
+      <details>
+        <summary> <code> set up map function </code> </summary>
+
+        ```jsx
+          const armies = this.state.armiesArray.map((army, armyIndex) => ())
+        ```
+
+      </details>
+
+    * The callback function will return some JSX representing an unordered list. Inside the opening `ul` tag, give the list a `className` of `"army"` and a `key` of `{armyIndex}`.
+      * Notice that `"army"` has quotes because it is a string, and `{armyIndex}` has curly braces because JSX needs to treat it as a variable and render its value.
+      * The `key` is something we add to elements being mapped over items in an array. It helps React track each item in the array. Each key should be unique. Here, since each item in our data array has a unique index, we can use that index as a convenient way to dynamically create keys for React to track each item.
+    * Between the `ul` tags, we'll render three things:
+      * An `h3` tag just like this: `<h3>Enemy Army #{army.id}: {army.name}</h3>`. This will act as a title for each army, introducing them by `army.id` and `army.name`.
+        * In case you are wondering where these values come from, remember that `army` is the variable representing each item being mapped over, and the `id` and `name` are properties on those item objects. You can see these properties if you examine the `db.json` file in the project folder, just like you can the values stored in other APIs by visiting those web sites and seeing how those APIs are set up.
+      * A `div` with a `className` of `"leader"`. Between the `div` tags, render `{army.leader}` to display each army's leader.
+      * A `ul` representing that army's minions. Remember, this `ul` is nested within the first `ul` we made which had a `className` of `"army"`. We do this because our API has a nested array of minion objects inside each army object.
+        * This nested `ul` should have a `className` of `"minions"`.
+        * Between the `ul` tags, render the following in curly braces:
+          * Call the `map()` method on `army.minions`. Inside the `map()` method, pass in a callback function that takes in two parameters representing each minion being mapped over and that minion's index. Call these `minion` and `minionIndex`.
+          Inside the callback, return a list item. Inside the `li` opening tag, give each minion a `key` whose value is the minions's ID, and include also a `className` of `minion`.
+          * Between the `li` tags, render `minion.type`.
+            <details>
+              <summary> <code> minion list item </code> </summary>
+
+              ```jsx
+                <li key={minionIndex} className="minion">{minion.type}</li>
+              ```
+
+            </details>
+
+  * We now have a variable called `armies` that will store our enemy data in a nested list. In the return statement, render this list inside the `div` with the `enemies` class (HINT: Look near the bottom of the JSX).
+
+  Part 3
+
+  We began our app by using axios to tell it how to request and receive data from our API. Then we established an array on state to receive that data and told our app how to render the data on the page. What is left is to simply create a way to call our service function to retrieve the data.
+  * Import the `getEnemies` function into `App.js`.
+  * You'll see a method in the component called `seeEnemies()`. Inside the code block for this method, call `getEnemies`, passing in no arguments, and then call `then()`.
+    * The callback in the `then()` method will accept a variable representing the API data. Let's call it `apiData`. Remember, `getEnemies` will return all characters from the API after reformatting them to fit our needs. That data is what is being passed into our callback here.
+    * The callback then sets the data on state, setting it as the value for `armiesArray`.
+      <details> <summary> <code> seeEnemies component method </code> </summary>
+
+        ```jsx
+          seeEnemies() {
+            getEnemies().then(apiData => {
+              this.setState({
+                armiesArray: apiData
+              })
+            })
+          }
+        ```
+
+      </details>
+
+  * Our method is set. While we are at it, let's use the `bind()` method to bind our component's context (its `this`) to our `seeEnemies` method. This will allow us to call the method elsewhere without breaking context. In other words, our app won't lose track of what `this.state` means when we call the `seeEnemies` method elsewhere, because we will have bound the method to this component's context.
+  * Now let's use our Sentry to call the method we just defined. Inside the opening tag of the `div` with the `id` of `"sentry"`, add an `onClick` event that will call our component's `seeEnemies` method.
+    <details> <summary> <code> seeEnemies onClick function </code> </summary>
+
+      ```jsx
+        onClick={this.seeEnemies}
+      ```
+
+    </details>
+
+  Well done, Sentry! If all went well, you should be seeing no errors and a bunch of menacing armies approaching the gate. Scroll down the page to see three enemy armies at the gates.
+
+
+
+  ### Solution for rendering enemies
+  * Now let's use our Sentry to call the method we just defined. Inside the opening tag of the `div` with the `id` of `"sentry"`, add an `onClick` event that will call our component's `seeEnemies` method.
+    <details> <summary> <code> src/App.js </code> </summary>
+
+    ```jsx
+
+    import React, { Component } from 'react';
+    import './styles/App.css';
+
+    import {getEnemies} from './services/getEnemies';
+
+    class App extends Component {
+
+      constructor() {
+        super()
+
+        this.state = {
+          armiesArray: []
+        }
+
+        this.seeEnemies = this.seeEnemies.bind(this)
+      }
+
+      seeEnemies() {
+        getEnemies().then(apiData => {
+          this.setState({
+            armiesArray: apiData
+          })
+        })
+      }
+
+      callTroops() {
+      }
+
+      recruitTroop() {
+      }
+
+      transformMinion() {
+      }
+
+      slayLeader() {
+      }
+
+
+      render() {
+        const armies = this.state.armiesArray.map((army, armyIndex) => (
+          <ul key={armyIndex} className="army">
+            <h3>Enemy Army #{army.id}: {army.name}</h3>
+            <div className="leader"</div>
+            <ul className="minions">
+              {army.minions.map((minion, minionIndex) => (
+                <li key={minionIndex} className="minion">{minion.type}</li>
+              ))}
+            </ul>
+          </ul>
+        ))
+
+        return (
+          <div className="App">
+
+            {/* Main Defenses */}
+            <div className="App-header">
+              <h1>Enemies at our gate!</h1>
+              <h2>Prepare our defenses!</h2>
+              <div className="defenses">
+                <div className="defense" id="sentry" onClick={this.seeEnemies}>Sentry<span className="instructions">Click here to see approaching enemies!</span></div>
+                <div className="defense" id="captain">Captain<span className="instructions">Fill out paperwork below to recruit new troop!</span></div>
+                <div className="defense" id="wizard">Wizard<span className="instructions">Click directly on a minion to cast a spell!</span></div>
+                <div className="defense" id="ballista">Ballista<span className="instructions">Blast enemy leader to disperse army!</span></div>
+              </div>
+            </div>
+
+
+            {/* Reinforcements */}
+            <div className="reinforcements">
+              <form type="submit">
+                New Recruit Request Form:
+                <input id="paperwork" placeholder="Please indicate requested recruit"/>
+                <button >Enlist!</button>
+              </form>
+              <div id="wall">
+                <span></span><span id="gate"></span><span></span>
+              </div>
+            </div>
+
+            <h1 id="message">{message}</h1>
+
+            {/* Enemy Armies */}
+            <div className="enemies">
+                {armies}
+            </div>
+          </div>
+        );
+      }
+    }
+
+    export default App;
+    ```
+
+    </details>
+
+
+## Step 3: getTroops request
+
+### Summary
+
+* Did that last step feel huge? Well now it gets better. In the last step, we went into detail about how to map through API data to render it in the React view. This step is like a mini-version of the last one.
+* It is our Captain's job to manage existing troops and post new troops to defend the line. Those defensive troops are also stored in the API database, just like the enemies. Let's get 'em.
+
+### Instructions
+
+* In the `services` folder, create a file called `getTroops.js`.
+* Import `axios`.
+* Create and export a function called `getTroops`. It will be very similar to the `getEnemies` service.
+  * Use `axios.get`.
+  * The URL route is `/defenses`.
+    <details>
+      <summary> <code> URL </code> </summary>
 
       ```js
-      return {
-        error: true,
-        loading: false,
-        search: false,
-        weather: {}
-      };
+      return axios.get('http://localhost:3005/defenses')
       ```
       </details>
+  * The `then()` method will return the response data just like in our last service.
+    <details>
+      <summary> <code> getTroops service </code> </summary>
 
-### Solution
+      ```js
+      export function getTroops() {
+        return axios.get('http://localhost:3005/defenses')
+        .then(res => {
+          return res.data
+        })
+      }
+      ```
+      </details>
+  * One thing that is different here than from our last service is that we do not need to reformat the information coming in because the format for this information already fits our needs. Therefore, we will not be calling our utility function on the response data.
 
-<details>
+  ### Solution for getTroops service
 
-<summary> <code> src/ducks/weather.js </code> </summary>
+  <details>
 
-```js
-import { buildURL, formatWeatherData } from '../utils/weatherUtils';
-import axios from 'axios';
+  <summary> <code> src/services/getTroops.js </code> </summary>
 
-const initialState = {
-  error: false,
-  loading: false,
-  search: true,
-  weather: {}
-};
+  ```js
+  import axios from 'axios';
 
-const RESET = "RESET";
-const SET_WEATHER = "SET_WEATHER";
-
-export default function weather( state = initialState, action ) {
-  switch ( action.type ) {
-    case SET_WEATHER + "_PENDING":
-      return {
-        error: false,
-        loading: true,
-        search: false,
-        weather: {}
-      };
-    case SET_WEATHER + "_FULFILLED":
-      return {
-        error: false,
-        loading: false,
-        search: false,
-        weather: action.payload
-      };
-    case SET_WEATHER + "_REJECTED":
-      return {
-        error: true,
-        loading: false,
-        search: false,
-        weather: {}
-      };
-
-    case RESET: return initialState;
-    default: return state;
-  }
-}
-
-export function reset() {
-  return { type: RESET };
-}
-
-export function setWeather( location ) {
-  var url = buildURL( location );
-  const promise = axios.get( url ).then( response => formatWeatherData( response.data ) );
-  return {
-    type: SET_WEATHER,
-    payload: promise
-  }
-}
-```
-
-</details>
-
-## Step 3
-
-### Summary
-
-In this step, we will create a file that contains and exports our API Key from `OpenWeatherMap`.
-
-### Instructions
-
-* Create a new file in `src` named `apiKey.js`.
-* In `src/apiKey.js` export default your API Key in a string.
-  * You can locate your API Key <a href="https://home.openweathermap.org/api_keys">here</a> after you've signed up and logged in.
-
-### Solution
-
-<details>
-
-<summary> <code> src/apiKey.js </code> </summary>
-
-```js
-export default "API_KEY_HERE";
-```
-
-</details>
-
-## Step 4
-
-### Summary
-
-In this step, we will update our `weatherUtils` file to handle constructing a URL that will be used to call the `OpenWeatherMap` API.
-
-### Instructions
-
-* Open `src/utils/weatherUtils.js`.
-* Import `API_KEY` from `src/apiKey.js`.
-* Modify the `BASE_URL` variable to equal:
-  * ``` `http://api.openweathermap.org/data/2.5/weather?APPID=${ API_KEY }&units=imperial&` ```
-
-### Solution
-
-<details>
-
-<summary> <code> src/utils/weatherUtils.js </code> </summary>
-
-```js
-import cloudy from "../assets/cloudy.svg";
-import partlyCloudy from "../assets/partly-cloudy.svg";
-import rainy from "../assets/rainy.svg";
-import snowy from "../assets/snowy.svg";
-import sunny from "../assets/sunny.svg";
-import unknownIcon from "../assets/unknown-icon.svg";
-import API_KEY from "../apiKey";
-
-const BASE_URL = `http://api.openweathermap.org/data/2.5/weather?APPID=${ API_KEY }&units=imperial&`;
-function isZipCode( location ) { return !isNaN( parseInt( location ) ); }
-function getWeatherIcon( conditionCode ) { if ( conditionCode === 800 ) { return sunny; } if ( conditionCode >= 200 && conditionCode < 600 ) { return rainy; } if ( conditionCode >= 600 && conditionCode < 700 ) { return snowy; } if ( conditionCode >= 801 && conditionCode <= 803 ) { return partlyCloudy; } if ( conditionCode === 804 ) { return cloudy; } return unknownIcon; }
-export function formatWeatherData( weatherData ) { return { icon: getWeatherIcon( weatherData.weather[ 0 ].id ), currentTemperature: weatherData.main.temp, location: weatherData.name, maxTemperature: weatherData.main.temp_max, minTemperature: weatherData.main.temp_min, humidity: weatherData.main.humidity, wind: weatherData.wind.speed }; }
-export function buildURL( location ) { if ( isZipCode( location ) ) { return BASE_URL + `zip=${location}`; } return BASE_URL + `q=${location}`; }
-```
-
-</details>
-
-## Step 5
-
-### Summary
-
-In this step, we will fetch the weather data from `OpenWeatherMap`'s API and place it on application state.
-
-### Instructions
-
-* Open `src/components/EnterLocation/EnterLocation.js`.
-* Import `setWeather` from `src/ducks/weather.js`.
-* Add `setWeather` to the object in the `connect` statement.
-* Modify the `handleSubmit` method:
-  * This method should call `setWeather` ( remember it is on props ) and pass in `this.state.location`.
-* Open `src/ducks/weather.js`.
-* Add a `console.log( action.payload )` before the `return` statement in the `SET_WEATHER + '_FULFILLED'` case.
-
-Try entering in a zip code or location in the interface and press submit. You should now see a `console.log` appear in the debugger console.
-
-### Solution
-
-<details>
-
-<summary> <code> src/components/EnterLocation/EnterLocation.js </code> </summary>
-
-```jsx
-import React, { Component } from "react";
-import { connect } from "react-redux";
-
-import { setWeather } from '../../ducks/weather';
-
-import "./EnterLocation.css";
-
-class EnterLocation extends Component {
-  constructor( props ) {
-    super( props );
-
-    this.state = { location: "" };
-
-    this.handleChange = this.handleChange.bind( this );
-    this.handleSubmit = this.handleSubmit.bind( this );
+  export function getTroops() {
+    return axios.get('http://localhost:3005/defenses')
+    .then(res => {
+      return res.data
+    })
   }
 
-  handleChange( event ) {
-    this.setState( { location: event.target.value } );
-  }
+  ```
 
-  handleSubmit( event ) {
-    event.preventDefault();
-    this.props.setWeather( this.state.location )
-    this.setState( { location: "" } );
-  }
+  </details>
 
-  render() {
-    return (
-      <form
-        className="enter-location"
-        onSubmit={ this.handleSubmit }
-      >
-        <input
-          className="enter-location__input"
-          onChange={ this.handleChange }
-          placeholder="London / 84601"
-          type="text"
-          value={ this.state.location }
-        />
-        <button
-          className="enter-location__submit"
-        >
-          Submit
-        </button>
-      </form>
-    );
-  }
-}
 
-export default connect( state => state, { setWeather })( EnterLocation );
-```
 
-</details>
+## Step 4: rendering troops
 
-## Step 6
+  ### Summary
 
-### Summary
+  * Now let's render those troops.
 
-In this step, we will be displaying all the different child components based on application state.
 
-* If `props.error` is truthy, we will render the `ErrorMessage` component with a reset prop equal to our `reset` action creator.
-* If `props.loading` is truthy, we will render an image with a `src` prop equal to `hourglass`. `hourglass` is an animated loading indicator.
-* If `props.search` is truthy, we will render the `EnterLocation` component.
-* If none of those are truthy, we will render the `CurrentWeather` component with a reset prop equal to our `reset` action creator and a weather prop equal to `weather` off of props.
+  ### Instructions
+  Part 1
+  * Our service is set up. Now let's write a function to bring in the data.
+  * In `App.js`, add `defensesArray` to state and set it equal to an empty array. This will store our defenses and let us map through them to display them.
 
-### Instructions
+  Part 2
+  * In the `render` method, use `map()` to map over the `defensesArray`.
+    * Declare a variable called `troops` to store the results.
+    * Set the `map()` callback parameters to `troop` and `troopIndex`.
+      <details>
+        <summary> <code> set up map function </code> </summary>
 
-* Open `src/App.js`.
-* Create a method above the `render` method called `renderChildren`:
-  * This method should deconstruct `error`, `loading`, `search`, `weather`, and `reset` from `props` for simplified referencing.
-  * This method should selectively render a component based on the conditions specified in the summary.
-* Replace `<EnterLocation />` in the render method with the invocation of `renderChildren`.
+        ```jsx
+          const troops = this.state.defensesArray.map((troop, troopIndex) => ())
+        ```
 
-### Solution
+      </details>
 
-<details>
+    * The callback function will return an unordered list. Give the `ul` a `className` of `"troops"` and a `key` of `{troopIndex}`.
+    * Between the tags we are rendering just one thing: a single `li`.
+      * Give the `li` a className of `troop`.
+      * Between the `li` tags, render `troop.recruit`.
 
-<summary> <code> src/App.js </code> </summary>
+  * We now have a variable called `troops` that will store our troop data. In the return statement, render this list inside the `div` with the `reinforcements` class between the `form` and the `div` with a `className` of `wall`.
 
-```jsx
-import React, { Component } from "react";
-import { connect } from "react-redux";
+  Part 3
 
-import "./App.css";
+  Let's create a method to get our troops. They know it's their duty to always be ready, so we'll create a method that is automatically called when the page loads, rather than waiting for someone to push a button to summon them.
+  * Import the `getTroops` service into `App.js`.
+  * In the `callTroops()` method, call `getTroops`. Pass in no arguments.
+    * The callback in the `then()` method will accept a variable representing the API data. Let's call it `apiData`.
+    * The callback sets the returned data on state, setting it as the value for `defensesArray`.
+      <details> <summary> <code> callTroops component method </code> </summary>
 
-import hourglass from "./assets/hourglass.svg";
+        ```jsx
+          callTroops() {
+            getTroops().then(apiData => {
+              this.setState({
+                defensesArray: apiData
+              })
+            })
+          }
+        ```
 
-import { reset } from "./ducks/weather";
+      </details>
 
-import CurrentWeather from "./components/CurrentWeather/CurrentWeather";
-import EnterLocation from "./components/EnterLocation/EnterLocation";
-import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
+  * Did you bind the context to our new method already? Because we don't actually need to this time.
+  * We want the troops to show up as soon as the view loads. For that, we will use one of React's lifecycle methods: `componentDidMount`. This method will appear next to the other methods in our component. However, since we won't be calling `componentDidMount` manually somewhere else in the code, we don't need to bind the context. Rather, `componentDidMount` is called automatically when the component finishes mounting.
+  * Inside the lifecycle method, simply call `this.callTroops`.
+    <details> <summary> <code> componentDidMount </code> </summary>
 
-class App extends Component {
-  renderChildren() {
-    const {
-      error,
-      loading,
-      search,
-      weather,
-      reset
-    } = this.props;
+      ```jsx
+        componentDidMount() {
+          this.callTroops();
+        }
+      ```
 
-    if ( error ) {
-      return <ErrorMessage reset={ reset } />
+    </details>
+
+  Good job! By now you should be seeing trusty Bill, the archer. He takes his duties very seriously. But he's probably not enough to hold back several armies of enemies. It looks like the Captain will have to fill out a request for some new troops.
+
+
+
+  ### Solution for rendering troops
+  <details> <summary> <code> src/App.js </code> </summary>
+
+  ```jsx
+
+  import React, { Component } from 'react';
+  import './styles/App.css';
+
+  import {getEnemies} from './services/getEnemies';
+  import {getTroops} from './services/getTroops';
+
+  class App extends Component {
+
+    constructor() {
+      super()
+
+      this.state = {
+        armiesArray: []
+        ,defensesArray: []
+      }
+
+      this.seeEnemies = this.seeEnemies.bind(this)
     }
 
-    if ( loading ) {
-      return (
-        <img alt="loading indicator" src={ hourglass } />
-      )
+    seeEnemies() {
+      getEnemies().then(apiData => {
+        this.setState({
+          armiesArray: apiData
+        })
+      })
     }
 
-    if ( search ) {
-      return <EnterLocation />
+    callTroops() {
+      getTroops().then(apiData => {
+        this.setState({
+          defensesArray: apiData
+        })
+      })
     }
 
-    return (
-      <CurrentWeather reset={ reset } weather={ weather } />
-    )
-  }
+    recruitTroop(event, recruit) {
+    }
 
-  render() {
-    return (
-      <div className="app">
-        <h1 className="app__title">WEATHERMAN</h1>
-        { this.renderChildren() }
-      </div>
-    );
-  }
-}
+    transformMinion(armyIndex, minionIndex, minionId) {
+    }
 
-export default connect( state => state, { reset } )( App );
-```
+    slayLeader(shortname, id) {
+    }
 
-</details>
+    componentDidMount() {
+      this.callTroops();
+    }
 
-## Step 7
-
-### Summary
-
-In this step, we will update `CurrentWeather` to display an icon and the actual weather information.
-
-### Detailed Instructions
-
-* Open `src/components/CurrentWeather/CurrentWeather.js`.
-* Using the `weather` prop object, replace the static data for location, icon, current temp, max temp, min temp, wind, and humidity.
-
-### Solution
-
-<details>
-
-<summary> <code> src/components/CurrentWeather/CurrentWeather.js </code> </summary>
-
-```jsx
-import React, { PropTypes } from "react";
-
-import "./CurrentWeather.css";
-
-export default function CurrentWeather( { weather, reset } ) {
-  const {
-    currentTemperature,
-    humidity,
-    icon,
-    location,
-    maxTemperature,
-    minTemperature,
-    wind
-  } = weather;
-  return (
-    <div className="current-weather">
-      <div className="current-weather__weather">
-        <h3 className="current-weather__location"> { location } </h3>
-        <img
-          alt="current weather icon"
-          className="current-weather__icon"
-          src={ icon }
-        />
-        <h3 className="current-weather__temp"> { currentTemperature }° </h3>
-
-        <div className="current-weather__separator" />
-
-        <ul className="current-weather__stats">
-          <li className="current-weather__stat">Max: { maxTemperature }°</li>
-          <li className="current-weather__stat">Min: { minTemperature }°</li>
-          <li className="current-weather__stat">Wind: { wind } MPH</li>
-          <li className="current-weather__stat">Humidity: { humidity }%</li>
+    render() {
+      const armies = this.state.armiesArray.map((army, armyIndex) => (
+        <ul key={armyIndex} className="army">
+          <h3>Enemy Army #{army.id}: {army.name}</h3>
+          <div className="leader">{army.leader}</div>
+          <ul className="minions">
+            {army.minions.map((minion, minionIndex) => (
+              <li key={minionIndex} className="minion">{minion.type}</li>
+            ))}
+          </ul>
         </ul>
-      </div>
-      <button
-        className="current-weather__search-again"
-        onClick={ reset }
-      >
-        Search Again
-      </button>
-    </div>
-  );
+      ))
+
+      const troops = this.state.defensesArray.map((troop, troopIndex) => (
+        <ul key={troopIndex} className="troops">
+          <li className="troop">{troop.recruit}</li>
+        </ul>
+      ))
+
+      const message = this.state.armiesArray.length < 1 ? "ALL CLEAR" : "";
+
+      return (
+        <div className="App">
+
+          {/* Main Defenses */}
+          <div className="App-header">
+            <h1>Enemies at our gate!</h1>
+            <h2>Prepare our defenses!</h2>
+            <div className="defenses">
+              <div className="defense" id="sentry" onClick={this.seeEnemies}>Sentry<span className="instructions">Click here to see approaching enemies!</span></div>
+              <div className="defense" id="captain">Captain<span className="instructions">Fill out Form NR-1 below to recruit new troop!</span></div>
+              <div className="defense" id="wizard">Wizard<span className="instructions">Click directly on a minion to cast a spell!</span></div>
+              <div className="defense" id="ballista">Ballista<span className="instructions">Blast enemy leader to disperse army!</span></div>
+            </div>
+          </div>
+
+
+          {/* Reinforcements */}
+          <div className="reinforcements">
+            <form type="submit">
+              New Recruit Request Form:
+              <input  id="paperwork" placeholder="Please indicate requested recruit"/>
+              <button >Enlist!</button>
+            </form>
+            {troops}
+            <div id="wall">
+              <span></span><span id="gate">GATE</span><span></span>
+            </div>
+          </div>
+
+          <h1 id="message">{message}</h1>
+
+          {/* Enemy Armies */}
+          <div className="enemies">
+              {armies}
+          </div>
+        </div>
+      );
+    }
   }
 
-  CurrentWeather.propTypes = {
-    reset: PropTypes.func.isRequired
-  , weather: PropTypes.shape( {
-      icon: PropTypes.string.isRequired
-    , currentTemperature: PropTypes.number.isRequired
-    , maxTemperature: PropTypes.number.isRequired
-    , minTemperature: PropTypes.number.isRequired
-    , wind: PropTypes.number.isRequired
-    , humidity: PropTypes.number.isRequired
-  } ).isRequired
-};
+  export default App;
+  ```
+
+  </details>
+
+
+## Step 5: postTroop service
+
+### Summary
+
+* Let's use `POST` requests to call in new Troops.
+
+### Instructions
+
+* Set up a new service called `postTroop.js`. This one will have a single parameter representing the troop we requested (we make the request using an `input` box on the page). Let's call that parameter variable `recruit`.
+  * The method for this service is `POST`.
+  * The URL route is `/defenses`.
+  * In addition to passing in a URL to `axios`, we must also pass in a request object. Our API database shows that each troop is an object with a single property: `recruit`. Therefore, if we want a new recruit with a format that matches our API, we should pass in a request object with a property called `recruit`. We'll set it equal to the value represented by the `recruit` variable we passed into the `postTroop` service function.
+    <details>
+      <summary> <code> URL </code> </summary>
+
+      ```js
+      return axios.post('http://localhost:3005/defenses/', {recruit: recruit})
+      ```
+      </details>
+  * The `then()` method will simply return the response status. Unlike in our `GET` services, we are sending data rather than receiving it back.
+
+  ### Solution for postTroop service
+
+  <details>
+
+  <summary> <code> src/services/postTroop.js </code> </summary>
+
+  ```js
+  import axios from 'axios';
+
+  export function postTroop(recruit) {
+    return axios.post('http://localhost:3005/defenses/', {recruit: recruit})
+    .then(res => {
+      return res.status;
+    })
+  }
+
+
+  ```
+
+  </details>
+
+
+
+## Step 6: using input to call postTroop service
+
+  ### Summary
+
+  * We have a handy form already, but it doesn't do much. Let's use it to request new troops. We'd like to be able to type in any kind of recruit and see that recruit appear next to Bill the Archer.
+
+
+  ### Instructions
+  Part 1
+  * Our service is set up. Let's write a method to go with it.
+  * In `App.js`, add `newRecruit` to state and set it equal to an empty string. This will store the information from our form input to be passed on to the service.
+
+  Part 2
+
+  Let's create two methods to help post a new recruit. Our first will connect to our `postTroop` service:
+  * Import the `postTroop` service into `App.js`.
+  * In the method, pass in two parameters: `event` and `recruit`. The represent, respectively, the event occurring when a form is submitted and the string value which is entered into the form input. More on those in a minute.
+  * In the `recruitTroop()` method, call `postTroop`. Pass in the same `recruit` variable just mentioned.
+    * The callback called a previous method we made, `callTroops`. That way, as soon as we post a new recruit, we make a request to the API to return all troops, ensuring they all appear in the view.
+    * If someone decides to hit the Enlist button without filling out the form, we don't want a bunch of empty objects appearing where soldiers should be. So let's test for empty strings by wrapping the call to our `postTroop` service function in an `if` statement.
+      * We can simply test the truthiness of `recruit`, since `recruit` is a string and strings are truthy and empty strings are falsy. If `recruit` is a non-empty string, `postTroop` will be called to post the new recruit.
+      * If the `if` statement passes and a new recruit is submitted, it might be nice to automatically clear out the form to allow something new to be typed.
+        * Outside the `if` statement, set a variable equal to the form input with the `id` of `"paperwork"`. Use `document.getElementById` to select the input from the DOM.
+          <details> <summary> <code> paperwork variable </code> </summary>
+
+            ```jsx
+              const paperwork = document.getElementById('paperwork')
+            ```
+
+          </details>
+
+        * Inside the `if` statement, after `callTroops()` is called, let's set the input's `value` to zero. Remember that `value` is a DOM attribute for `input` elements, and it represents what is currently typed into the `input`. We already selected the `input` in question using the variable `paperwork`, so we can now access the typed-in value using dot notation.
+          <details> <summary> <code> clear out input </code> </summary>
+
+            ```jsx
+              paperwork.value = ''
+            ```
+
+          </details>
+
+  Our second method is a simple method for handling what is typed into the input.
+  * Call the method `handleInput`. Pass in `event`. Here, `event` represents the event of something being typed into the input. It occurs everytime a new character is typed.
+  * Inside the method, set the state, changing the value of `newRecruit` (which starts as an empty string if you recall) to the value currently typed into the input. Use `target.value`.
+    <details> <summary> <code> handleInput </code> </summary>
+
+      ```jsx
+        handleInput(event) {
+          this.setState({
+            newRecruit: event.target.value
+          })
+        }
+      ```
+
+    </details>
+
+  Part 3
+
+  Let's activate edit the input and Enlist button to send our requests.
+  * Inside the input box, add an `onChange` event listener to watch for anything being typed into the box. The value of `onChange` will be an arrow function that passes in the event and then calls our `handleInput` method on that event. This sets our `this.state.newRecruit` value equal to what is being typed.
+    <details> <summary> <code> onChange input event </code> </summary>
+
+      ```jsx
+        onChange={(e) => this.handleInput(e)}
+      ```
+
+    </details>
+  * Inside the button, add an `onClick` event listener to watch for the button to be clicked. Here, the event is not what is typed into the input; it is the act of submitting the form. The value of `onClick` will be an arrow function that passes in the event and then calls our `recruitTroop` method, passing in the event and the current value of `this.state.newRecruit`.
+    <details> <summary> <code> onChange input event </code> </summary>
+
+      ```jsx
+        onClick={(e) => this.recruitTroop(e, this.state.newRecruit)}
+      ```
+
+    </details>
+
+    * I told you I would come back to the importance of `event` and `recruit` when we were setting up our `recruitTroop` method. We need to pass in the recruit value so it can be passed to our service to become the value of the request object, which is then sent to the API database.
+    * We need to pass in the event because we need our `recruitTroop` method to prevent a default action performed by submit buttons which causes the page to refresh. If you have everything working a this point, you may have noticed that requesting a new troop causes the enemy armies to disappear. That is because clicking the submit button refreshes the view. To prevent that, simply call the `preventDefault()` method on the `event` passed into the `recruitTroop` method. Do this at the top of the method's code block.
+
+    <details> <summary> <code> updated recruitTroop method </code> </summary>
+
+      ```jsx
+        recruitTroop(event, recruit) {
+            event.preventDefault()
+            const paperwork = document.getElementById('paperwork')
+            if (recruit) {
+              postTroop(recruit).then(apiData => {
+                this.callTroops();
+                paperwork.value = ''
+              })
+            }
+          }
+      ```
+
+    </details>
+
+  Well done, Captain! Now add some troops! Whatever you need! I recommend some knights or some more archers to help out trusty Bill.
+
+
+  ### Solution for posting troops
+  <details> <summary> <code> src/App.js </code> </summary>
+
+  ```jsx
+
+  import React, { Component } from 'react';
+  import './styles/App.css';
+
+  import {getEnemies} from './services/getEnemies';
+  import {getTroops} from './services/getTroops';
+  import {postTroop} from './services/postTroop';
+
+  class App extends Component {
+
+    constructor() {
+      super()
+
+      this.state = {
+        armiesArray: []
+        ,defensesArray: []
+      }
+
+      this.seeEnemies = this.seeEnemies.bind(this)
+      this.recruitTroop = this.recruitTroop.bind(this)
+    }
+
+    seeEnemies() {
+      getEnemies().then(apiData => {
+        this.setState({
+          armiesArray: apiData
+        })
+      })
+    }
+
+    callTroops() {
+      getTroops().then(apiData => {
+        this.setState({
+          defensesArray: apiData
+        })
+      })
+    }
+
+    recruitTroop(event, recruit) {
+      event.preventDefault()
+      const paperwork = document.getElementById('paperwork')
+      if (recruit) {
+        postTroop(recruit).then(apiData => {
+          this.callTroops();
+          paperwork.value = ''
+        })
+      }
+    }
+
+    handleInput(event) {
+      this.setState({
+        newRecruit: event.target.value
+      })
+    }
+
+    transformMinion(armyIndex, minionIndex, minionId) {
+    }
+
+    slayLeader(shortname, id) {
+    }
+
+    componentDidMount() {
+      this.callTroops();
+    }
+
+    render() {
+      const armies = this.state.armiesArray.map((army, armyIndex) => (
+        <ul key={armyIndex} className="army">
+          <h3>Enemy Army #{army.id}: {army.name}</h3>
+          <div className="leader"</div>
+          <ul className="minions">
+            {army.minions.map((minion, minionIndex) => (
+              <li key={minionIndex} className="minion">{minion.type}</li>
+            ))}
+          </ul>
+        </ul>
+      ))
+
+      const troops = this.state.defensesArray.map((troop, troopIndex) => (
+        <ul key={troopIndex} className="troops">
+          <li className="troop">{troop.recruit}</li>
+        </ul>
+      ))
+
+      const message = this.state.armiesArray.length < 1 ? "ALL CLEAR" : "";
+
+      return (
+        <div className="App">
+
+          {/* Main Defenses */}
+          <div className="App-header">
+            <h1>Enemies at our gate!</h1>
+            <h2>Prepare our defenses!</h2>
+            <div className="defenses">
+              <div className="defense" id="sentry" onClick={this.seeEnemies}>Sentry<span className="instructions">Click here to see approaching enemies!</span></div>
+              <div className="defense" id="captain">Captain<span className="instructions">Fill out Form NR-1 below to recruit new troop!</span></div>
+              <div className="defense" id="wizard">Wizard<span className="instructions">Click directly on a minion to cast a spell!</span></div>
+              <div className="defense" id="ballista">Ballista<span className="instructions">Blast enemy leader to disperse army!</span></div>
+            </div>
+          </div>
+
+
+          {/* Reinforcements */}
+          <div className="reinforcements">
+            <form type="submit">
+              New Recruit Request Form:
+              <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit"/>
+              <button onClick={(e) => this.recruitTroop(e, this.state.newRecruit)}>Enlist!</button>
+            </form>
+            {troops}
+            <div id="wall">
+              <span></span><span id="gate">GATE</span><span></span>
+            </div>
+          </div>
+
+          <h1 id="message">{message}</h1>
+
+          {/* Enemy Armies */}
+          <div className="enemies">
+              {armies}
+          </div>
+        </div>
+      );
+    }
+  }
+
+  export default App;
+
+  ```
+
+  </details>
+
+## Step 7: patchMinion request
+
+### Summary
+
+Let's call on the Wizard to help out our troops! The Wizard will make use of the `PATCH` request to transform those minions into something less threatening.
+
+### Instructions
+
+* In the `services` folder, create a file called `patchMinions.js`. Create and export a service function.
+  * Each army has a shortname in the API database (e.g., "undead", "barbarian", "goblin"), and each minion of each army has an ID. Pass a `shortname` parameter and an `id` parameter into our service.
+  * Use `axios.patch`.
+  * If you wanted to transform the second minion of the barbarian army, the URL would be `/barbarian/minions/2`. However, we need to create a dynamic URL here that will be based on the `shortname` and `id` arguments that are passed in. Using your JavaScript knowhow, put together a URL using both strings and variables so that it will be dynamic.
+    <details>
+      <summary> <code> URL </code> </summary>
+
+      ```jsx
+      return axios.patch('http://localhost:3005/' + shortname + '/minions/' + id)
+      ```
+      </details>
+  * Following the URL, pass in a request object with a `type` property to match the property of minions in the API database. Set the value to `"frog"`.
+  * The `then()` method will the response status.
+
+  ### Solution for patchMinions service
+
+  <details>
+
+  <summary> <code> src/services/patchMinions.js </code> </summary>
+
+  ```jsx
+  import axios from 'axios';
+
+  export function patchMinion(shortname, id) {
+    return axios.patch('http://localhost:3005/' + shortname + '/minions/' + id, {type: "frog"})
+    .then(res => {
+      return res.status
+    })
+  }
+
+  ```
+
+  </details>
+
+
+
+## Step 8: transforming minions
+
+  ### Summary
+
+  Set the Wizard loose on those minions!
+
+
+  ### Instructions
+
+  Let's create a method to transform those minions. We'll activate the request by clicking on each minion we want to change.
+  * Import the `patchMinions` service.
+  * In the `transformMinion()` method, pass in `armyShortname` and `minionId` as parameters. Call `patchMinions` and pass in the same parameters.
+    * The callback merely calls our component's `seeEnemies` method, which allows the data to be updated after the change is made to the database.
+      <details> <summary> <code> transformMinion component method </code> </summary>
+
+        ```jsx
+          transformMinion(armyShortname, minionId) {
+            patchMinion(armyShortname, minionId).then(() => {
+              this.seeEnemies();
+            })
+          }
+        ```
+
+      </details>
+
+  * Inside the opening tag for the `li` element with the `className` of `minion`, add an `onClick` event that has an arrow function that calls our `transformMinion` method and passes in the shortname for the army and the ID for the minion (which are properties on the enemy and minion objects).
+    <details> <summary> <code> minion onClick event </code> </summary>
+
+      ```jsx
+        onClick={() => this.transformMinion(army.shortname, minion.id)}
+      ```
+
+    </details>
+
+  Now you can transform any minion you touch. Well done, Wizard!
+
+
+  ### Solution for transforming minions
+  <details> <summary> <code> src/App.js </code> </summary>
+
+  ```jsx
+  import React, { Component } from 'react';
+  import './styles/App.css';
+
+  import {getEnemies} from './services/getEnemies';
+  import {getTroops} from './services/getTroops';
+  import {postTroop} from './services/postTroop';
+  import {patchMinion} from './services/patchMinion';
+
+  class App extends Component {
+
+    constructor() {
+      super()
+
+      this.state = {
+        armiesArray: []
+        ,defensesArray: []
+        ,newRecruit: ""
+      }
+
+      this.seeEnemies = this.seeEnemies.bind(this)
+      this.recruitTroop = this.recruitTroop.bind(this)
+    }
+
+    seeEnemies() {
+      getEnemies().then(apiData => {
+        this.setState({
+          armiesArray: apiData
+        })
+      })
+    }
+    //
+    callTroops() {
+      getTroops().then(apiData => {
+        this.setState({
+          defensesArray: apiData
+        })
+      })
+    }
+
+    recruitTroop(event, recruit) {
+      event.preventDefault()
+      const paperwork = document.getElementById('paperwork')
+      if (recruit) {
+        postTroop(recruit).then(apiData => {
+          this.callTroops();
+          paperwork.value = ''
+        })
+      }
+    }
+
+    handleInput(event) {
+      this.setState({
+        newRecruit: event.target.value
+      })
+    }
+
+    transformMinion(armyShortname, minionId) {
+      patchMinion(armyShortname, minionId).then(() => {
+        this.seeEnemies();
+      })
+    }
+
+    slayLeader(shortname, id) {
+    }
+
+    componentDidMount() {
+      this.callTroops();
+    }
+
+    render() {
+      const armies = this.state.armiesArray.map((army, armyIndex) => (
+        <ul key={armyIndex} className="army">
+          <h3>Enemy Army #{army.id}: {army.name}</h3>
+          <div className="leader">{army.leader}</div>
+          <ul className="minions">
+            {army.minions.map((minion, minionIndex) => (
+              <li key={minionIndex} className="minion" onClick={() => this.transformMinion(army.shortname, minion.id)}>{minion.type}</li>
+            ))}
+          </ul>
+        </ul>
+      ))
+
+      const troops = this.state.defensesArray.map((troop, troopIndex) => (
+        <ul key={troopIndex} className="troops">
+          <li className="troop">{troop.recruit}</li>
+        </ul>
+      ))
+
+      const message = this.state.armiesArray.length < 1 ? "ALL CLEAR" : "";
+
+      return (
+        <div className="App">
+
+          {/* Main Defenses */}
+          <div className="App-header">
+            <h1>Enemies at our gate!</h1>
+            <h2>Prepare our defenses!</h2>
+            <div className="defenses">
+              <div className="defense" id="sentry" onClick={this.seeEnemies}>Sentry<span className="instructions">Click here to see approaching enemies!</span></div>
+              <div className="defense" id="captain">Captain<span className="instructions">Fill out Form NR-1 below to recruit new troop!</span></div>
+              <div className="defense" id="wizard">Wizard<span className="instructions">Click directly on a minion to cast a spell!</span></div>
+              <div className="defense" id="ballista">Ballista<span className="instructions">Blast enemy leader to disperse army!</span></div>
+            </div>
+          </div>
+
+
+          {/* Reinforcements */}
+          <div className="reinforcements">
+            <form type="submit">
+              New Recruit Request Form:
+              <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit"/>
+              <button onClick={(e) => this.recruitTroop(e, this.state.newRecruit)}>Enlist!</button>
+            </form>
+            {troops}
+            <div id="wall">
+              <span></span><span id="gate">GATE</span><span></span>
+            </div>
+          </div>
+
+          <h1 id="message">{message}</h1>
+
+          {/* Enemy Armies */}
+          <div className="enemies">
+              {armies}
+          </div>
+        </div>
+      );
+    }
+  }
+
+  export default App;
+
+
+  ```
+
+  </details>
+
+
+
+## Step 9: deleteArmy request
+
+### Summary
+
+Our Sentry, Captain, and Wizard have done a great job of keeping the enemies at bay, but those enemy leaders will need something serious. Let's get our ballista working so we can do some real damage.
+
+### Instructions
+
+* Create a service called `deleteArmy.js`.
+  * As mentioned, each army has a shortname. Each army also has an ID. Pass a `shortname` parameter and an `id` parameter into our service.
+  * Use `axios.delete`.
+  * If you wanted to destroy the leader of the Great Goblin Family, the URL would be `/goblin/3`. However, as with the previous service, we will need a dynamic URL that can take in our variables.
+    <details>
+      <summary> <code> URL </code> </summary>
+
+      ```jsx
+      return axios.delete('http://localhost:3005/' + shortname + '/' + id)
+      ```
+      </details>
+  * No request object is passed in. `axios.delete` uses the ID to delete everything. What this means here is that passing in the leader's ID will destroy that leader's entire army!
+
+  ### Solution for deleteArmy service
+
+  <details>
+
+  <summary> <code> src/services/deleteArmy.js </code> </summary>
+
+  ```jsx
+  import axios from 'axios';
+
+  export function deleteArmy(shortname, id) {
+    return axios.delete('http://localhost:3005/' + shortname + '/' + id)
+    .then(res => {
+      return res.data
+    })
+  }
+
+  ```
+
+  </details>
+
+
+
+## Step 10: destroying the enemy leaders
+
+  ### Summary
+
+  Fire the Ballista!
+
+
+  ### Instructions
+
+  Let's create a method to delete the leader of each army. We'll activate the request by clicking on each leader we want to delete.
+  * Import the `deleteArmy` service into `App.js`.
+  * In the `slayLeader()` method, pass in `shortname` and `id` as parameters. Call `deleteArmy` and pass in the same parameters.
+    * The callback merely calls our component's `seeEnemies` method.
+      <details> <summary> <code> slayLeader component method </code> </summary>
+
+        ```jsx
+        slayLeader(shortname, id) {
+          deleteArmy(shortname, id).then(() => {
+            this.seeEnemies();
+          })
+        }
+        ```
+
+      </details>
+
+  * Inside the opening tag for the `div` element with the `className` of `leader`, add an `onClick` event that has an arrow function that calls our `slayLeader` method and passes in the shortname and the ID for the army.
+    <details> <summary> <code> leader onClick event </code> </summary>
+
+      ```jsx
+        onClick={() => this.slayLeader(army.shortname, army.id)}
+      ```
+
+    </details>
+
+  Now you can take out the army leaders and clear the area of all enemies! Well done!
+
+
+  ### Solution for slaying leaders
+  <details> <summary> <code> src/App.js </code> </summary>
+
+  ```jsx
+  import React, { Component } from 'react';
+  import './styles/App.css';
+
+  import {getEnemies} from './services/getEnemies';
+  import {getTroops} from './services/getTroops';
+  import {postTroop} from './services/postTroop';
+  import {patchMinion} from './services/patchMinion';
+
+  class App extends Component {
+
+    constructor() {
+      super()
+
+      this.state = {
+        armiesArray: []
+        ,defensesArray: []
+        ,newRecruit: ""
+      }
+
+      this.seeEnemies = this.seeEnemies.bind(this)
+      this.recruitTroop = this.recruitTroop.bind(this)
+    }
+
+    seeEnemies() {
+      getEnemies().then(apiData => {
+        this.setState({
+          armiesArray: apiData
+        })
+      })
+    }
+    //
+    callTroops() {
+      getTroops().then(apiData => {
+        this.setState({
+          defensesArray: apiData
+        })
+      })
+    }
+
+    recruitTroop(event, recruit) {
+      event.preventDefault()
+      const paperwork = document.getElementById('paperwork')
+      if (recruit) {
+        postTroop(recruit).then(apiData => {
+          this.callTroops();
+          paperwork.value = ''
+        })
+      }
+    }
+
+    handleInput(event) {
+      this.setState({
+        newRecruit: event.target.value
+      })
+    }
+
+    transformMinion(armyShortname, minionId) {
+      patchMinion(armyShortname, minionId).then(() => {
+        this.seeEnemies();
+      })
+    }
+
+    slayLeader(shortname, id) {
+    }
+
+    componentDidMount() {
+      this.callTroops();
+    }
+
+    render() {
+      const armies = this.state.armiesArray.map((army, armyIndex) => (
+        <ul key={armyIndex} className="army">
+          <h3>Enemy Army #{army.id}: {army.name}</h3>
+          <div className="leader">{army.leader}</div>
+          <ul className="minions">
+            {army.minions.map((minion, minionIndex) => (
+              <li key={minionIndex} className="minion" onClick={() => this.transformMinion(army.shortname, minion.id)}>{minion.type}</li>
+            ))}
+          </ul>
+        </ul>
+      ))
+
+      const troops = this.state.defensesArray.map((troop, troopIndex) => (
+        <ul key={troopIndex} className="troops">
+          <li className="troop">{troop.recruit}</li>
+        </ul>
+      ))
+
+      const message = this.state.armiesArray.length < 1 ? "ALL CLEAR" : "";
+
+      return (
+        <div className="App">
+
+          {/* Main Defenses */}
+          <div className="App-header">
+            <h1>Enemies at our gate!</h1>
+            <h2>Prepare our defenses!</h2>
+            <div className="defenses">
+              <div className="defense" id="sentry" onClick={this.seeEnemies}>Sentry<span className="instructions">Click here to see approaching enemies!</span></div>
+              <div className="defense" id="captain">Captain<span className="instructions">Fill out Form NR-1 below to recruit new troop!</span></div>
+              <div className="defense" id="wizard">Wizard<span className="instructions">Click directly on a minion to cast a spell!</span></div>
+              <div className="defense" id="ballista">Ballista<span className="instructions">Blast enemy leader to disperse army!</span></div>
+            </div>
+          </div>
+
+
+          {/* Reinforcements */}
+          <div className="reinforcements">
+            <form type="submit">
+              New Recruit Request Form:
+              <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit"/>
+              <button onClick={(e) => this.recruitTroop(e, this.state.newRecruit)}>Enlist!</button>
+            </form>
+            {troops}
+            <div id="wall">
+              <span></span><span id="gate">GATE</span><span></span>
+            </div>
+          </div>
+
+          <h1 id="message">{message}</h1>
+
+          {/* Enemy Armies */}
+          <div className="enemies">
+              {armies}
+          </div>
+        </div>
+      );
+    }
+  }
+
+  export default App;
+
+
+  ```
+
+  </details>
+
+
+
+
+## Notes on json-server
+
+### Summary
+
+Congratulations on finishing another mini project! For those who are interested in how `json-server` was used to simulate an API in this project, keep reading.
+
+### Instructions
+
+* Install json-server using `npm install json-server`. In this project, ```json json-server``` was in the dependencies, so it was installed automatically when you ran `npm install`.
+* Create an API file with a .json extension. The API file used in this project is below these instruction.
+* In this project, you had to run `npm run api` in a separate terminal window. In you package.json file, add a line like the one below into the scripts section:
+```json
+  "api": "json-server --watch db.json --port 3005 --routes routes.json --delay 500"
+  ```
+* When the `npm run api` script is run, this script:
+  * points json-server to the db.json file,
+  * assigned to port 3005,
+  * connected to the routes.json file (where our custom routes are), and
+  * told to delay the response by half a second.
+* These last two options are unnecessary but add to the simulation of an actual API.
+
+### Character API
+
+<details>
+
+<summary> <code> rpg/db.json </code> </summary>
+
+```json
+{
+  "defenses": [
+    {
+      "id": 0,
+      "recruit": "Bill the Archer"
+    }
+  ],
+  "undead": [
+    {
+      "id": 1,
+      "name": "Undead Army",
+      "shortname": "undead",
+      "leader": "Necromancer"
+    }
+  ],
+  "undead_minions": [
+    {
+      "id": 1,
+      "type": "Skeleton"
+    },
+    {
+      "id": 2,
+      "type": "Skeleton Archer"
+    },
+    {
+      "id": 3,
+      "type": "Skeleton Archer"
+    },
+    {
+      "id": 4,
+      "type": "Skeleton"
+    },
+    {
+      "id": 5,
+      "type": "Skeleton"
+    },
+    {
+      "id": 6,
+      "type": "Skeleton"
+    },
+    {
+      "id": 7,
+      "type": "Skeleton Archer"
+    },
+    {
+      "id": 8,
+      "type": "Skeleton Archer"
+    },
+    {
+      "id": 9,
+      "type": "Lich"
+    }
+  ],
+  "barbarian": [
+    {
+      "id": 2,
+      "name": "Barbarian Horde",
+      "shortname": "barbarian",
+      "leader": "Barbarian Warlord"
+    }
+  ],
+  "barbarian_minions": [
+    {
+      "id": 1,
+      "type": "Barbarian"
+    },
+    {
+      "id": 2,
+      "type": "Barbarian"
+    },
+    {
+      "id": 3,
+      "type": "Barbarian"
+    },
+    {
+      "id": 4,
+      "type": "Barbarian"
+    },
+    {
+      "id": 5,
+      "type": "Barbarian"
+    },
+    {
+      "id": 6,
+      "type": "Barbarian"
+    },
+    {
+      "id": 7,
+      "type": "Barbarian"
+    },
+    {
+      "id": 8,
+      "type": "Barbarian"
+    },
+    {
+      "id": 9,
+      "type": "Barbarian"
+    },
+    {
+      "id": 10,
+      "type": "Barbarian"
+    },
+    {
+      "id": 11,
+      "type": "Barbarian"
+    },
+    {
+      "id": 12,
+      "type": "Barbarian"
+    },
+    {
+      "id": 13,
+      "type": "Barbarian"
+    },
+    {
+      "id": 14,
+      "type": "Barbarian"
+    },
+    {
+      "id": 15,
+      "type": "Barbarian"
+    },
+    {
+      "id": 16,
+      "type": "Barbarian"
+    },
+    {
+      "id": 17,
+      "type": "Barbarian"
+    },
+    {
+      "id": 18,
+      "type": "Barbarian"
+    },
+    {
+      "id": 19,
+      "type": "Barbarian"
+    },
+    {
+      "id": 20,
+      "type": "Barbarian"
+    }
+  ],
+  "goblin": [
+    {
+      "id": 3,
+      "name": "Great Goblin Family",
+      "shortname": "goblin",
+      "leader": "Grandma Gob"
+    }
+  ],
+  "goblin_minions": [
+    {
+      "id": 1,
+      "type": "Goblin"
+    },
+    {
+      "id": 2,
+      "type": "Goblin"
+    },
+    {
+      "id": 3,
+      "type": "Goblin"
+    },
+    {
+      "id": 4,
+      "type": "Goblin"
+    },
+    {
+      "id": 5,
+      "type": "Goblin"
+    },
+    {
+      "id": 6,
+      "type": "Goblin"
+    },
+    {
+      "id": 7,
+      "type": "Angry Pixie (adopted)"
+    }
+  ]
+}
+
 ```
 
 </details>
