@@ -53,18 +53,14 @@ class App extends Component {
   }
 
   handleInput(event) {
-    // event.preventDefault();
     this.setState({
       newRecruit: event.target.value
     })
   }
 
-  transformMinion(armyIndex, minionIndex, minionId) {
-    patchMinion(minionId).then(apiData => {
-      this.state.armiesArray[armyIndex].minions.splice(minionIndex, 1, apiData)
-      this.setState({
-        armiesArray: this.state.armiesArray
-      })
+  transformMinion(armyShortname, minionId) {
+    patchMinion(armyShortname, minionId).then(apiData => {
+      this.seeEnemies();
     })
   }
 
@@ -84,7 +80,7 @@ class App extends Component {
         <div className="leader" onClick={() => this.slayLeader(army.shortname, army.id)}>{army.leader}</div>
         <ul className="minions">
           {army.minions.map((minion, minionIndex) => (
-            <li key={minionIndex} className="minion" onClick={() => this.transformMinion(armyIndex, minionIndex, minion.id)}>{minion.type}</li>
+            <li key={minionIndex} className="minion" onClick={() => this.transformMinion(army.shortname, minion.id)}>{minion.type}</li>
           ))}
         </ul>
       </ul>
