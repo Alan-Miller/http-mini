@@ -15,7 +15,7 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
   * Run `npm start` to spin up the development server.
 * In a second terminal window:
   * `cd` into the `rpg` project directory.
-  * Run `npm run api`. This will run a script in the package.json file that will run json-server, point to our API file, and set a port. The API has been setup to be delayed by 1 second.
+  * Run `npm run api`. This will run a script in the package.json file that will run json-server, point to our API file, and set a port. The API has been set up to have a short delay.
 * You should now have two processes running in two separate terminal windows. Open a third window and run `npm install axios`. You can also use this third window if you want to commit any changes as you go, but keep the first two window running your app and your api.
 
 ## Step 1: getEnemies request
@@ -118,7 +118,7 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
         * This nested `ul` should have a `className` of `"minions"`.
         * Between the `ul` tags, render the following in curly braces:
           * Call the `map()` method on `army.minions`. Inside the `map()` method, pass in a callback function that takes in two parameters representing each minion being mapped over and that minion's index. Call these `minion` and `minionIndex`.
-          Inside the callback, return a list item. Inside the `li` opening tag, give each minion a `key` whose value is the minions's ID, and include also a `className` of `minion`.
+          Inside the callback, return a list item. Inside the `li` opening tag, give each minion a `key` whose value is the minions's index, and include also a `className` of `minion`.
           * Between the `li` tags, render `minion.type`.
             <details>
               <summary> <code> minion list item </code> </summary>
@@ -214,7 +214,7 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
         const armies = this.state.armiesArray.map((army, armyIndex) => (
           <ul key={armyIndex} className="army">
             <h3>Enemy Army #{army.id}: {army.name}</h3>
-            <div className="leader"</div>
+            <div className="leader">{army.leader}</div>
             <ul className="minions">
               {army.minions.map((minion, minionIndex) => (
                 <li key={minionIndex} className="minion">{minion.type}</li>
@@ -222,6 +222,8 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
             </ul>
           </ul>
         ))
+
+        const message = this.state.armiesArray.length < 1 ? "ALL CLEAR" : "";
 
         return (
           <div className="App">
@@ -436,13 +438,13 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
       })
     }
 
-    recruitTroop(event, recruit) {
+    recruitTroop() {
     }
 
-    transformMinion(armyIndex, minionIndex, minionId) {
+    transformMinion() {
     }
 
-    slayLeader(shortname, id) {
+    slayLeader() {
     }
 
     componentDidMount() {
@@ -601,7 +603,7 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
           </details>
 
   Our second method is a simple method for handling what is typed into the input.
-  * Call the method `handleInput`. Pass in `event`. Here, `event` represents the event of something being typed into the input. It occurs everytime a new character is typed.
+  * Call the method `handleInput`. Pass in `event`. Here, `event` represents the event of something being typed into the input. It occurs every time a new character is typed.
   * Inside the method, set the state, changing the value of `newRecruit` (which starts as an empty string if you recall) to the value currently typed into the input. Use `target.value`.
     <details> <summary> <code> handleInput </code> </summary>
 
@@ -717,10 +719,10 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
       })
     }
 
-    transformMinion(armyIndex, minionIndex, minionId) {
+    transformMinion() {
     }
 
-    slayLeader(shortname, id) {
+    slayLeader() {
     }
 
     componentDidMount() {
@@ -731,7 +733,7 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
       const armies = this.state.armiesArray.map((army, armyIndex) => (
         <ul key={armyIndex} className="army">
           <h3>Enemy Army #{army.id}: {army.name}</h3>
-          <div className="leader"</div>
+          <div className="leader">{army.leader}</div>
           <ul className="minions">
             {army.minions.map((minion, minionIndex) => (
               <li key={minionIndex} className="minion">{minion.type}</li>
@@ -941,7 +943,7 @@ Let's call on the Wizard to help out our troops! The Wizard will make use of the
       })
     }
 
-    slayLeader(shortname, id) {
+    slayLeader() {
     }
 
     componentDidMount() {
@@ -1164,7 +1166,7 @@ Our Sentry, Captain, and Wizard have done a great job of keeping the enemies at 
       })
     }
 
-    slayLeader(shortname, id) {
+    slayLeader() {
     }
 
     componentDidMount() {
