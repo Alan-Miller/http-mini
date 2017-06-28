@@ -90,7 +90,7 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
 
   ### Instructions
   Part 1
-  * Our service is set up, but we need our front end to call a function to trigger our service, and we need to create a place for the information to be displayed in the view.
+  * Our service is set up, but we need our front end to call a function to trigger our service function, and we need to create a place for the information to be displayed in the view.
   * Create a constructor function. On state, create a property called `armiesArray` and set it equal to an empty array. When the API is called and an array of enemies is returned, we will use `armiesArray` to store and display that data, mapping through array to show each item.
 
   Part 2
@@ -281,7 +281,7 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
 
 * In the `services` folder, create a file called `getTroops.js`.
 * Import `axios`.
-* Create and export a function called `getTroops`. It will be very similar to the `getEnemies` service.
+* Create and export a function called `getTroops`. It will be very similar to the `getEnemies` function.
   * Use `axios.get`.
   * The URL route is `/defenses`.
     <details>
@@ -363,7 +363,7 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
   Part 3
 
   Let's create a method to get our troops. They know it's their duty to always be ready, so we'll create a method that is automatically called when the page loads, rather than waiting for someone to push a button to summon them.
-  * Import the `getTroops` service into `App.js`.
+  * Import the `getTroops` function into `App.js`.
   * In the `callTroops()` method, call `getTroops`. Pass in no arguments.
     * The callback in the `then()` method will accept a variable representing the API data. Let's call it `apiData`.
     * The callback sets the returned data on state, setting it as the value for `defensesArray`.
@@ -490,7 +490,7 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
           <div className="reinforcements">
             <form type="submit">
               New Recruit Request Form:
-              <input  id="paperwork" placeholder="Please indicate requested recruit"/>
+              <input id="paperwork" placeholder="Please indicate requested recruit"/>
               <button >Enlist!</button>
             </form>
 
@@ -529,7 +529,7 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
 ### Instructions
 
 * Set up a new service called `postTroop.js`. This one will have a single parameter representing the troop we requested (we make the request using an `input` box on the page). Let's call that parameter variable `recruit`.
-  * The method for this service is `POST`.
+  * The method for this service function is `POST`.
   * The URL route is `/defenses`.
   * In addition to passing in a URL to `axios`, we must also pass in a request object. Our API database shows that each troop is an object with a single property: `recruit`. Therefore, if we want a new recruit with a format that matches our API, we should pass in a request object with a property called `recruit`. We'll set it equal to the value represented by the `recruit` variable we passed into the `postTroop` service function.
     <details>
@@ -574,32 +574,28 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
   ### Instructions
   Part 1
   * Our service is set up. Now let's handle the data within `src/App.js`.
-  * In `App.js`, add `newRecruit` to state and set it equal to an empty string. This will store the information from our form input to be passed on to the service.
+  * In `App.js`, add `newRecruit` to state and set it equal to an empty string. This will store the information from our form input to be passed on to the service function.
 
   Part 2
 
-  Let's create two methods to help post a new recruit. Our first method is called `recruitTroop` and will connect to our `postTroop` service.
-  * Before writing this method, import the `postTroop` service into `App.js`.
+  Let's create two methods to help post a new recruit. Our first method is called `recruitTroop` and will connect to our `postTroop` function.
+  * Before writing this method, import the `postTroop` function into `App.js`.
   * Now the `recruitTroop` method already exists, but it needs to be fleshed out. Start by passing in two parameters: `event` and `recruit`. They represent, respectively, the event occurring when a form is submitted and the string value which is entered into the form input. More on those in just a minute.
   * In the `recruitTroop()` method, call `postTroop`. Pass in the same `recruit` variable just mentioned.
     * The callback called a previous method we made, `callTroops`. That way, as soon as we post a new recruit, we make a request to the API to return all troops, ensuring they all appear in the view.
     * If someone decides to hit the Enlist button without filling out the form, we don't want a bunch of empty objects appearing where soldiers should be. So let's test for empty strings by wrapping the call to our `postTroop` service function in an `if` statement.
       * We can simply test the truthiness of `recruit`, since `recruit` is a string and non-empty strings are truthy and empty strings are falsy. If `recruit` is a non-empty string, `postTroop` will be called to post the new recruit.
       * If the `if` statement passes and a new recruit is submitted, it might be nice to automatically clear out the form to allow something new to be typed.
-        * Outside the `if` statement, set a variable equal to the form input with the `id` of `"paperwork"`. Use `document.getElementById` to select the input from the DOM.
-          <details> <summary> <code> paperwork variable </code> </summary>
-
-            ```jsx
-              const paperwork = document.getElementById('paperwork')
-            ```
-
-          </details>
-
-        * Inside the `if` statement, after `callTroops()` is called, let's set the input's `value` to zero. Remember that `value` is a DOM attribute for `input` elements, and it represents what is currently typed into the `input`. We already selected the `input` in question using the variable `paperwork`, so we can now access the typed-in value using dot notation.
+        * Inside the `if` statement, after `callTroops()` is called, let's set the input's `value` to an empty string.
+        * The React way to do this is to set the state of the property, which will cause a re-render. Use `setState` to do this now.
+        * Since we are here and talking about the React way, let's also add something to our `input` tag to help React track the `input` value. Add `value={this.state.newRecruit}` to the `input` tag. The `value` is a property of inputs, so setting it equal to `this.state.newRecruit` tells React that the value in the `input` should be equal to the value on state.
+        value={this.state.newRecruit}
           <details> <summary> <code> clear out input </code> </summary>
 
             ```jsx
-              paperwork.value = ''
+            this.setState({
+              newRecruit: ''
+            })
             ```
 
           </details>
@@ -631,7 +627,7 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
 
     </details>
   * Inside the button, add an `onClick` event listener to watch for the button to be clicked. Here, the event is not what is typed into the input; it is the act of submitting the form. The value of `onClick` will be an arrow function that passes in the event and then calls our `recruitTroop` method, passing in the event and the current value of `this.state.newRecruit`.
-    <details> <summary> <code> onChange input event </code> </summary>
+    <details> <summary> <code> onClick input event </code> </summary>
 
       ```jsx
         onClick={(e) => this.recruitTroop(e, this.state.newRecruit)}
@@ -639,22 +635,23 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
 
     </details>
 
-    * I told you we would come back to the importance of `event` and `recruit` when we were setting up our `recruitTroop` method. We need to pass in the recruit value so it can be passed to our service to become the value of the request object, which is then sent to the API database.
+    * I told you we would come back to the importance of `event` and `recruit` when we were setting up our `recruitTroop` method. We need to pass in the recruit value so it can be passed to our service function to become the value of the request object, which is then sent to the API database.
     * We need to pass in the event because we need our `recruitTroop` method to prevent a default action performed by submit buttons which causes the page to refresh. If you have everything working a this point, you may have noticed that requesting a new troop causes the enemy armies to disappear. That is because clicking the submit button refreshes the view. To prevent that, simply call the `preventDefault()` method on the `event` passed into the `recruitTroop` method. Do this at the top of the method's code block.
 
     <details> <summary> <code> updated recruitTroop method </code> </summary>
 
       ```jsx
-        recruitTroop(event, recruit) {
-            event.preventDefault()
-            const paperwork = document.getElementById('paperwork')
-            if (recruit) {
-              postTroop(recruit).then(apiData => {
-                this.callTroops();
-                paperwork.value = ''
-              })
-            }
-          }
+      recruitTroop(event, recruit) {
+        event.preventDefault()
+        if (recruit) {
+          postTroop(recruit).then(() => {
+            this.callTroops();
+            this.setState({
+              newRecruit: ''
+            })
+          })
+        }
+      }
       ```
 
     </details>
@@ -706,11 +703,12 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
 
     recruitTroop(event, recruit) {
       event.preventDefault()
-      const paperwork = document.getElementById('paperwork')
       if (recruit) {
-        postTroop(recruit).then(apiData => {
+        postTroop(recruit).then(() => {
           this.callTroops();
-          paperwork.value = ''
+          this.setState({
+            newRecruit: ''
+          })
         })
       }
     }
@@ -770,7 +768,7 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
           <div className="reinforcements">
             <form type="submit">
               New Recruit Request Form:
-              <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit"/>
+              <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit" value={this.state.newRecruit}/>
               <button onClick={(e) => this.recruitTroop(e, this.state.newRecruit)}>Enlist!</button>
             </form>
 
@@ -809,7 +807,7 @@ Let's call on the Wizard to help out our troops! The Wizard will make use of the
 ### Instructions
 
 * In the `services` folder, create a file called `patchMinions.js`. Create and export a service function.
-  * Each army has a shortname in the API database (e.g., "undead", "barbarian", "goblin"), and each minion of each army has an ID. Pass a `shortname` parameter and an `id` parameter into our service.
+  * Each army has a shortname in the API database (e.g., "undead", "barbarian", "goblin"), and each minion of each army has an ID. Pass a `shortname` parameter and an `id` parameter into our service function.
   * Use `axios.patch`.
   * If you wanted to transform the second minion of the barbarian army, the URL would be `/barbarian/minions/2`. However, we need to create a dynamic URL here that will be based on the `shortname` and `id` arguments that are passed in. Using your JavaScript knowhow, put together a URL using both strings and variables so that it will be dynamic.
     <details>
@@ -820,7 +818,7 @@ Let's call on the Wizard to help out our troops! The Wizard will make use of the
       ```
       </details>
   * Following the URL, pass in a request object with a `type` property to match the property of minions in the API database. Set the value to `"frog"`.
-  * The `then()` method will the response status.
+  * The `then()` method will return the response status.
 
   ### Solution for patchMinions service
 
@@ -854,7 +852,7 @@ Let's call on the Wizard to help out our troops! The Wizard will make use of the
   ### Instructions
 
   Let's create a method to transform those minions. We'll activate the request by clicking on each minion we want to change.
-  * Import the `patchMinions` service.
+  * Import the `patchMinions` function.
   * In the `transformMinion()` method, pass in `armyShortname` and `minionId` as parameters. Call `patchMinions` and pass in the same parameters.
     * The callback merely calls our component's `seeEnemies` method, which allows the data to be updated after the change is made to the database.
       <details> <summary> <code> transformMinion component method </code> </summary>
@@ -915,7 +913,7 @@ Let's call on the Wizard to help out our troops! The Wizard will make use of the
         })
       })
     }
-    //
+
     callTroops() {
       getTroops().then(apiData => {
         this.setState({
@@ -926,14 +924,16 @@ Let's call on the Wizard to help out our troops! The Wizard will make use of the
 
     recruitTroop(event, recruit) {
       event.preventDefault()
-      const paperwork = document.getElementById('paperwork')
       if (recruit) {
-        postTroop(recruit).then(apiData => {
+        postTroop(recruit).then(() => {
           this.callTroops();
-          paperwork.value = ''
+          this.setState({
+            newRecruit: ''
+          })
         })
       }
     }
+
 
     handleInput(event) {
       this.setState({
@@ -993,7 +993,7 @@ Let's call on the Wizard to help out our troops! The Wizard will make use of the
           <div className="reinforcements">
             <form type="submit">
               New Recruit Request Form:
-              <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit"/>
+              <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit" value={this.state.newRecruit}/>
               <button onClick={(e) => this.recruitTroop(e, this.state.newRecruit)}>Enlist!</button>
             </form>
 
@@ -1035,7 +1035,7 @@ Our Sentry, Captain, and Wizard have done a great job of keeping the enemies at 
 ### Instructions
 
 * Create a service called `deleteArmy.js`.
-  * As mentioned, each army has a shortname. Each army also has an ID. Pass a `shortname` parameter and an `id` parameter into our service.
+  * As mentioned, each army has a shortname. Each army also has an ID. Pass a `shortname` parameter and an `id` parameter into the function in our service function.
   * Use `axios.delete`.
   * If you wanted to destroy the leader of the Great Goblin Family, the URL would be `/goblin/3`. However, as with the previous service, we will need a dynamic URL that can take in our variables.
     <details>
@@ -1079,7 +1079,7 @@ Our Sentry, Captain, and Wizard have done a great job of keeping the enemies at 
   ### Instructions
 
   Let's create a method to delete the leader of each army. We'll activate the request by clicking on each leader we want to delete.
-  * Import the `deleteArmy` service into `App.js`.
+  * Import the `deleteArmy` service function into `App.js`.
   * In the `slayLeader()` method, pass in `shortname` and `id` as parameters. Call `deleteArmy` and pass in the same parameters.
     * The callback merely calls our component's `seeEnemies` method.
       <details> <summary> <code> slayLeader component method </code> </summary>
@@ -1140,7 +1140,7 @@ Our Sentry, Captain, and Wizard have done a great job of keeping the enemies at 
         })
       })
     }
-    //
+
     callTroops() {
       getTroops().then(apiData => {
         this.setState({
@@ -1151,14 +1151,16 @@ Our Sentry, Captain, and Wizard have done a great job of keeping the enemies at 
 
     recruitTroop(event, recruit) {
       event.preventDefault()
-      const paperwork = document.getElementById('paperwork')
       if (recruit) {
-        postTroop(recruit).then(apiData => {
+        postTroop(recruit).then(() => {
           this.callTroops();
-          paperwork.value = ''
+          this.setState({
+            newRecruit: ''
+          })
         })
       }
     }
+
 
     handleInput(event) {
       this.setState({
@@ -1218,7 +1220,7 @@ Our Sentry, Captain, and Wizard have done a great job of keeping the enemies at 
           <div className="reinforcements">
             <form type="submit">
               New Recruit Request Form:
-              <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit"/>
+              <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit" value={this.state.newRecruit}/>
               <button onClick={(e) => this.recruitTroop(e, this.state.newRecruit)}>Enlist!</button>
             </form>
 
