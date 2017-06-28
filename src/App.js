@@ -85,9 +85,7 @@ class App extends Component {
     ))
 
     const troops = this.state.defensesArray.map((troop, troopIndex) => (
-      <ul key={troopIndex} className="troops">
-        <li className="troop">{troop.recruit}</li>
-      </ul>
+      <li key={troopIndex} className="troop">{troop.recruit}</li>
     ))
 
     const message = this.state.armiesArray.length < 1 ? "ALL CLEAR" : "";
@@ -115,7 +113,11 @@ class App extends Component {
             <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit"/>
             <button onClick={(e) => this.recruitTroop(e, this.state.newRecruit)}>Enlist!</button>
           </form>
-          {troops}
+
+          <ul className="troops">
+            {troops}
+          </ul>
+
           <div id="wall">
             <span></span><span id="gate"></span><span></span>
           </div>

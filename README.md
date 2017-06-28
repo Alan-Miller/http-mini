@@ -337,7 +337,7 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
 
   ### Instructions
   Part 1
-  * Our service is set up. Now let's write a function to bring in the data.
+  * Our service is set up. Now let's bring in the data.
   * In `App.js`, add `defensesArray` to state and set it equal to an empty array. This will store our defenses and let us map through them to display them.
 
   Part 2
@@ -358,7 +358,7 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
       * Give the `li` a className of `troop`.
       * Between the `li` tags, render `troop.recruit`.
 
-  * We now have a variable called `troops` that will store our troop data. In the return statement, render this list inside the `div` with the `reinforcements` class between the `form` and the `div` with a `className` of `wall`.
+  * We now have a variable called `troops` that will store our troop data. In the return statement, render this variable between the `ul` tags in the `troops` list.
 
   Part 3
 
@@ -465,9 +465,7 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
       ))
 
       const troops = this.state.defensesArray.map((troop, troopIndex) => (
-        <ul key={troopIndex} className="troops">
-          <li className="troop">{troop.recruit}</li>
-        </ul>
+        <li className="troop">{troop.recruit}</li>
       ))
 
       const message = this.state.armiesArray.length < 1 ? "ALL CLEAR" : "";
@@ -495,7 +493,11 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
               <input  id="paperwork" placeholder="Please indicate requested recruit"/>
               <button >Enlist!</button>
             </form>
-            {troops}
+
+            <ul className="troops">
+              {troops}
+            </ul>
+
             <div id="wall">
               <span></span><span id="gate"></span><span></span>
             </div>
@@ -571,18 +573,18 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
 
   ### Instructions
   Part 1
-  * Our service is set up. Let's write a method to go with it.
+  * Our service is set up. Now let's handle the data within `src/App.js`.
   * In `App.js`, add `newRecruit` to state and set it equal to an empty string. This will store the information from our form input to be passed on to the service.
 
   Part 2
 
-  Let's create two methods to help post a new recruit. Our first will connect to our `postTroop` service:
-  * Import the `postTroop` service into `App.js`.
-  * In the method, pass in two parameters: `event` and `recruit`. The represent, respectively, the event occurring when a form is submitted and the string value which is entered into the form input. More on those in a minute.
+  Let's create two methods to help post a new recruit. Our first method is called `recruitTroop` and will connect to our `postTroop` service.
+  * Before writing this method, import the `postTroop` service into `App.js`.
+  * Now the `recruitTroop` method already exists, but it needs to be fleshed out. Start by passing in two parameters: `event` and `recruit`. They represent, respectively, the event occurring when a form is submitted and the string value which is entered into the form input. More on those in just a minute.
   * In the `recruitTroop()` method, call `postTroop`. Pass in the same `recruit` variable just mentioned.
     * The callback called a previous method we made, `callTroops`. That way, as soon as we post a new recruit, we make a request to the API to return all troops, ensuring they all appear in the view.
     * If someone decides to hit the Enlist button without filling out the form, we don't want a bunch of empty objects appearing where soldiers should be. So let's test for empty strings by wrapping the call to our `postTroop` service function in an `if` statement.
-      * We can simply test the truthiness of `recruit`, since `recruit` is a string and strings are truthy and empty strings are falsy. If `recruit` is a non-empty string, `postTroop` will be called to post the new recruit.
+      * We can simply test the truthiness of `recruit`, since `recruit` is a string and non-empty strings are truthy and empty strings are falsy. If `recruit` is a non-empty string, `postTroop` will be called to post the new recruit.
       * If the `if` statement passes and a new recruit is submitted, it might be nice to automatically clear out the form to allow something new to be typed.
         * Outside the `if` statement, set a variable equal to the form input with the `id` of `"paperwork"`. Use `document.getElementById` to select the input from the DOM.
           <details> <summary> <code> paperwork variable </code> </summary>
@@ -637,7 +639,7 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
 
     </details>
 
-    * I told you I would come back to the importance of `event` and `recruit` when we were setting up our `recruitTroop` method. We need to pass in the recruit value so it can be passed to our service to become the value of the request object, which is then sent to the API database.
+    * I told you we would come back to the importance of `event` and `recruit` when we were setting up our `recruitTroop` method. We need to pass in the recruit value so it can be passed to our service to become the value of the request object, which is then sent to the API database.
     * We need to pass in the event because we need our `recruitTroop` method to prevent a default action performed by submit buttons which causes the page to refresh. If you have everything working a this point, you may have noticed that requesting a new troop causes the enemy armies to disappear. That is because clicking the submit button refreshes the view. To prevent that, simply call the `preventDefault()` method on the `event` passed into the `recruitTroop` method. Do this at the top of the method's code block.
 
     <details> <summary> <code> updated recruitTroop method </code> </summary>
@@ -743,9 +745,7 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
       ))
 
       const troops = this.state.defensesArray.map((troop, troopIndex) => (
-        <ul key={troopIndex} className="troops">
-          <li className="troop">{troop.recruit}</li>
-        </ul>
+        <li className="troop">{troop.recruit}</li>
       ))
 
       const message = this.state.armiesArray.length < 1 ? "ALL CLEAR" : "";
@@ -773,7 +773,11 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
               <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit"/>
               <button onClick={(e) => this.recruitTroop(e, this.state.newRecruit)}>Enlist!</button>
             </form>
-            {troops}
+
+            <ul className="troops">
+              {troops}
+            </ul>
+
             <div id="wall">
               <span></span><span id="gate"></span><span></span>
             </div>
@@ -964,9 +968,7 @@ Let's call on the Wizard to help out our troops! The Wizard will make use of the
       ))
 
       const troops = this.state.defensesArray.map((troop, troopIndex) => (
-        <ul key={troopIndex} className="troops">
-          <li className="troop">{troop.recruit}</li>
-        </ul>
+        <li className="troop">{troop.recruit}</li>
       ))
 
       const message = this.state.armiesArray.length < 1 ? "ALL CLEAR" : "";
@@ -994,7 +996,11 @@ Let's call on the Wizard to help out our troops! The Wizard will make use of the
               <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit"/>
               <button onClick={(e) => this.recruitTroop(e, this.state.newRecruit)}>Enlist!</button>
             </form>
-            {troops}
+
+            <ul className="troops">
+              {troops}
+            </ul>
+
             <div id="wall">
               <span></span><span id="gate"></span><span></span>
             </div>
@@ -1187,9 +1193,7 @@ Our Sentry, Captain, and Wizard have done a great job of keeping the enemies at 
       ))
 
       const troops = this.state.defensesArray.map((troop, troopIndex) => (
-        <ul key={troopIndex} className="troops">
-          <li className="troop">{troop.recruit}</li>
-        </ul>
+        <li className="troop">{troop.recruit}</li>
       ))
 
       const message = this.state.armiesArray.length < 1 ? "ALL CLEAR" : "";
@@ -1217,7 +1221,11 @@ Our Sentry, Captain, and Wizard have done a great job of keeping the enemies at 
               <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit"/>
               <button onClick={(e) => this.recruitTroop(e, this.state.newRecruit)}>Enlist!</button>
             </form>
-            {troops}
+
+            <ul className="troops">
+              {troops}
+            </ul>
+
             <div id="wall">
               <span></span><span id="gate"></span><span></span>
             </div>
