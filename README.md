@@ -588,6 +588,8 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
       * If the `if` statement passes and a new recruit is submitted, it might be nice to automatically clear out the form to allow something new to be typed.
         * Inside the `if` statement, after `callTroops()` is called, let's set the input's `value` to an empty string.
         * The React way to do this is to set the state of the property, which will cause a re-render. Use `setState` to do this now.
+        * Since we are here and talking about the React way, let's also add something to our `input` tag to help React track the `input` value. Add `value={this.state.newRecruit}` to the `input` tag. The `value` is a property of inputs, so setting it equal to `this.state.newRecruit` tells React that the value in the `input` should be equal to the value on state.
+        value={this.state.newRecruit}
           <details> <summary> <code> clear out input </code> </summary>
 
             ```jsx
@@ -766,7 +768,7 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
           <div className="reinforcements">
             <form type="submit">
               New Recruit Request Form:
-              <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit"/>
+              <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit" value={this.state.newRecruit}/>
               <button onClick={(e) => this.recruitTroop(e, this.state.newRecruit)}>Enlist!</button>
             </form>
 
@@ -991,7 +993,7 @@ Let's call on the Wizard to help out our troops! The Wizard will make use of the
           <div className="reinforcements">
             <form type="submit">
               New Recruit Request Form:
-              <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit"/>
+              <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit" value={this.state.newRecruit}/>
               <button onClick={(e) => this.recruitTroop(e, this.state.newRecruit)}>Enlist!</button>
             </form>
 
@@ -1218,7 +1220,7 @@ Our Sentry, Captain, and Wizard have done a great job of keeping the enemies at 
           <div className="reinforcements">
             <form type="submit">
               New Recruit Request Form:
-              <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit"/>
+              <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit" value={this.state.newRecruit}/>
               <button onClick={(e) => this.recruitTroop(e, this.state.newRecruit)}>Enlist!</button>
             </form>
 

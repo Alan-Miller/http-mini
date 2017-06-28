@@ -29,7 +29,7 @@ class App extends Component {
       })
     })
   }
-  
+
   callTroops() {
     getTroops().then(apiData => {
       this.setState({
