@@ -58,6 +58,10 @@ class App extends Component {
           </div>
         </div>
 
+        <ul className="troops">
+          
+        </ul>
+
         <h1 id="message">{message}</h1>
 
         {/* Enemy Armies */}
