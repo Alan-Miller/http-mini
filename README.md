@@ -353,9 +353,9 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
 
       </details>
 
-    * The callback function will return an unordered list. Give the `ul` a `className` of `"troops"` and a `key` of `{troopIndex}`.
-    * Between the tags we are rendering just one thing: a single `li`.
+    * The callback function will return a repeated `li`.
       * Give the `li` a className of `troop`.
+      * Give the `li` a `key` of `{troopIndex}`.
       * Between the `li` tags, render `troop.recruit`.
 
   * We now have a variable called `troops` that will store our troop data. In the return statement, render this variable between the `ul` tags in the `troops` list.
@@ -586,20 +586,14 @@ ENEMIES AT OUR GATE! In this mini project we will use `axios` to make requests t
     * If someone decides to hit the Enlist button without filling out the form, we don't want a bunch of empty objects appearing where soldiers should be. So let's test for empty strings by wrapping the call to our `postTroop` service function in an `if` statement.
       * We can simply test the truthiness of `recruit`, since `recruit` is a string and non-empty strings are truthy and empty strings are falsy. If `recruit` is a non-empty string, `postTroop` will be called to post the new recruit.
       * If the `if` statement passes and a new recruit is submitted, it might be nice to automatically clear out the form to allow something new to be typed.
-        * Outside the `if` statement, set a variable equal to the form input with the `id` of `"paperwork"`. Use `document.getElementById` to select the input from the DOM.
-          <details> <summary> <code> paperwork variable </code> </summary>
-
-            ```jsx
-              const paperwork = document.getElementById('paperwork')
-            ```
-
-          </details>
-
-        * Inside the `if` statement, after `callTroops()` is called, let's set the input's `value` to zero. Remember that `value` is a DOM attribute for `input` elements, and it represents what is currently typed into the `input`. We already selected the `input` in question using the variable `paperwork`, so we can now access the typed-in value using dot notation.
+        * Inside the `if` statement, after `callTroops()` is called, let's set the input's `value` to an empty string.
+        * The React way to do this is to set the state of the property, which will cause a re-render. Use `setState` to do this now.
           <details> <summary> <code> clear out input </code> </summary>
 
             ```jsx
-              paperwork.value = ''
+            this.setState({
+              newRecruit: ''
+            })
             ```
 
           </details>

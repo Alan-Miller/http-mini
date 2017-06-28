@@ -40,11 +40,12 @@ class App extends Component {
 
   recruitTroop(event, recruit) {
     event.preventDefault()
-    const paperwork = document.getElementById('paperwork')
     if (recruit) {
       postTroop(recruit).then(() => {
         this.callTroops();
-        paperwork.value = ''
+        this.setState({
+          newRecruit: ''
+        })
       })
     }
   }
@@ -110,7 +111,7 @@ class App extends Component {
         <div className="reinforcements">
           <form type="submit">
             New Recruit Request Form:
-            <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit"/>
+            <input onChange={(e) => this.handleInput(e)} id="paperwork" placeholder="Please indicate requested recruit" value={this.state.newRecruit}/>
             <button onClick={(e) => this.recruitTroop(e, this.state.newRecruit)}>Enlist!</button>
           </form>
 
